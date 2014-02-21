@@ -2,6 +2,12 @@
 [Bb]in/
 [Oo]bj/
 
+# Build Folders for Solution
+KinectGame_WindowsXNA/KinectGame_WindowsXNA/[Bb]in/
+KinectGame_WindowsXNA/KinectGame_WindowsXNA/[Oo]bj/
+KinectGame_WindowsXNA/KinectGame_WindowsXNAContent/[Bb]in/
+KinectGame_WindowsXNA/KinectGame_WindowsXNAContent/[Oo]bj/
+
 # mstest test results
 TestResults
 
