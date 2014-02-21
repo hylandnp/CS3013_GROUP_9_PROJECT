@@ -1,6 +1,0 @@
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\bin\x86\Debug\KinectGame_WindowsXNA.exe
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\bin\x86\Debug\KinectGame_WindowsXNA.pdb
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\obj\x86\Debug\KinectGame_WindowsXNA.csprojResolveAssemblyReference.cache
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\obj\x86\Debug\KinectGame_WindowsXNA.exe
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\obj\x86\Debug\KinectGame_WindowsXNA.pdb

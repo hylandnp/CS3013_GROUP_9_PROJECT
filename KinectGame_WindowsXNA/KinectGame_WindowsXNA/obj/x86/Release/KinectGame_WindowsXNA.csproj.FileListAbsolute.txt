@@ -1,5 +1,0 @@
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\bin\x86\Release\KinectGame_WindowsXNA.exe
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\bin\x86\Release\KinectGame_WindowsXNA.pdb
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\obj\x86\Release\Microsoft.Xna.Framework.RuntimeProfile.txt
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\obj\x86\Release\KinectGame_WindowsXNA.exe
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNA\obj\x86\Release\KinectGame_WindowsXNA.pdb

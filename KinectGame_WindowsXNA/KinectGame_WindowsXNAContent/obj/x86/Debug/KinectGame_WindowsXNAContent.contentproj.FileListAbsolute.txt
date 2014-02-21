@@ -1,1 +1,0 @@
-d:\users\neil\documents\visual studio 2013\Projects\KinectGame_WindowsXNA\KinectGame_WindowsXNA\KinectGame_WindowsXNAContent\obj\x86\Debug\KinectGame_WindowsXNAContent.contentprojResolveAssemblyReference.cache
