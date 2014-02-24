@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -8,8 +9,13 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Kinect;
 
+using Microsoft.Kinect;
+using KinectGame_WindowsXNA.Source.KinectUtils;
+
+/*CHANGELOG
+ * NEIL - Created class & basic functionality.
+ */
 
 namespace KinectGame_WindowsXNA
 {
@@ -19,9 +25,12 @@ namespace KinectGame_WindowsXNA
           * MEMBER DATA
           *////////////////////////////////////////
         private GraphicsDeviceManager graphics = null;
-        private SpriteBatch spriteBatch = null;
+        private SpriteBatch sprite_batch = null;
         private KinectSensor kinect = null;
         private bool using_kinect_input = false;
+
+        // Kinect selector tool:
+        KinectSelector selector = null;
 
 
         /*/////////////////////////////////////////
@@ -29,17 +38,18 @@ namespace KinectGame_WindowsXNA
           *////////////////////////////////////////
         public KinectGame_WindowsXNA()
         {
-            graphics = new GraphicsDeviceManager(this);
+            // Create the game class...
+            this.graphics = new GraphicsDeviceManager(this);
 
             // Configure graphical settings:
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 600;
-            graphics.IsFullScreen = false;
-            graphics.PreferMultiSampling = true; // use antialiasing
-            graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
-            graphics.SynchronizeWithVerticalRetrace = true; // use vsync
+            this.graphics.PreferredBackBufferWidth = 800;
+            this.graphics.PreferredBackBufferHeight = 600;
+            this.graphics.IsFullScreen = false;
+            this.graphics.PreferMultiSampling = true; // use antialiasing
+            this.graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            this.graphics.SynchronizeWithVerticalRetrace = true; // use vsync
 
-            Content.RootDirectory = "Content";
+            this.Content.RootDirectory = "Content";
         }
 
 
@@ -48,7 +58,8 @@ namespace KinectGame_WindowsXNA
           *////////////////////////////////////////
         protected override void Initialize()
         {
-            using_kinect_input = true; // set to false if you want to use the mouse to simulate Kinect input
+            // Initialise the game class...
+            this.using_kinect_input = true; // set to false if you want to use the mouse to simulate Kinect input
 
             base.Initialize();
         }
@@ -60,9 +71,16 @@ namespace KinectGame_WindowsXNA
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            this.sprite_batch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Create Kinect selector:
+            Vector2 selector_pos = new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width - 300) / 2.0),
+                                               (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height - 225) / 2.0));
+
+            this.selector = new KinectSelector(ColorImageFormat.RgbResolution640x480Fps30,
+                                               DepthImageFormat.Resolution640x480Fps30,
+                                               this.Content.Load<Texture2D>("Textures/Kinect/SelectorUI_Logo"),
+                                               this.Content.Load<SpriteFont>("Fonts/Segoe16"));
         }
 
 
@@ -92,13 +110,20 @@ namespace KinectGame_WindowsXNA
         /*/////////////////////////////////////////
           * GAME ANIMATION & RENDERING FUNCTION
           *////////////////////////////////////////
-        protected override void Draw(GameTime gameTime)
+        protected override void Draw(GameTime p_game_time)
         {
-            GraphicsDevice.Clear(Color.Black);
+            this.GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
+            if(selector != null)
+            {
+                selector.draw(p_game_time,
+                              this,
+                              ref this.sprite_batch,
+                              ref this.graphics);
+            }
 
-            base.Draw(gameTime);
+            base.Draw(p_game_time);
         }
     }
 }

@@ -1,5 +1,9 @@
 using System;
 
+/*CHANGELOG
+ * NEIL - Created class & modified window setup.
+ */
+
 namespace KinectGame_WindowsXNA
 {
 #if WINDOWS || XBOX

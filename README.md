@@ -13,6 +13,11 @@ Kinect For Windows SDK 1.8
 
 XNA Game Studio 4.0
 
+
 ======================
+
+CHANGELOG:
+
+Neil (24/02/2014) - Added Kinect sensor selector class based on Microsoft XNA examples.
 
 
