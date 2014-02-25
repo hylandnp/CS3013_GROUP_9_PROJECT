@@ -148,6 +148,10 @@
     <Content Include="KinectPuzzleGame_WindowsXNA_ICON.ico" />
     <Content Include="KinectPuzzleGame_WindowsXNA_THUMBNAIL.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Source\Game\" />
+    <Folder Include="Source\Interface\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

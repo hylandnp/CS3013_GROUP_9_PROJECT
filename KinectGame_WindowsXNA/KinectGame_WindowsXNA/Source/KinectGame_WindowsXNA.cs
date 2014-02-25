@@ -29,8 +29,22 @@ namespace KinectGame_WindowsXNA
         private KinectSensor kinect = null;
         private bool using_kinect_input = false;
 
+        private Texture2D logo = null; // game loading splash/logo
+        private Vector2 logo_pos;
+
         // Kinect selector tool:
         KinectSelector selector = null;
+
+        // Game states:
+        private enum GameState : byte
+        {
+            STARTUP,
+            MENU,
+            PUZZLE_PAINT,
+            PUZZLE_MAKE
+        }
+        GameState current_game_state = GameState.STARTUP;
+
 
 
         /*/////////////////////////////////////////
@@ -53,6 +67,7 @@ namespace KinectGame_WindowsXNA
         }
 
 
+
         /*/////////////////////////////////////////
           * NON-GRAPHICAL DATA INITIALISATION
           *////////////////////////////////////////
@@ -65,6 +80,7 @@ namespace KinectGame_WindowsXNA
         }
 
 
+
         /*/////////////////////////////////////////
          * GRAPHICAL DATA & RESOURCE LOADING
          */////////////////////////////////////////
@@ -73,15 +89,18 @@ namespace KinectGame_WindowsXNA
             // Create a new SpriteBatch, which can be used to draw textures.
             this.sprite_batch = new SpriteBatch(GraphicsDevice);
 
-            // Create Kinect selector:
-            Vector2 selector_pos = new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width - 300) / 2.0),
-                                               (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height - 225) / 2.0));
+            // Load game logo:
+            this.logo = this.Content.Load<Texture2D>("Textures/Kinect/UI_Logo");
+            this.logo_pos = new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width - this.logo.Width) / 2.0),
+                                        (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height - this.logo.Height) / 2.0));
 
+            // Create Kinect selector:
             this.selector = new KinectSelector(ColorImageFormat.RgbResolution640x480Fps30,
-                                               DepthImageFormat.Resolution640x480Fps30,
-                                               this.Content.Load<Texture2D>("Textures/Kinect/SelectorUI_Logo"),
-                                               this.Content.Load<SpriteFont>("Fonts/Segoe16"));
+                                               DepthImageFormat.Resolution640x480Fps30);
+                                               //this.Content.Load<Texture2D>("Textures/Kinect/SelectorUI_Logo"),
+                                               //this.Content.Load<SpriteFont>("Fonts/Segoe16"));
         }
+
 
 
         /*/////////////////////////////////////////
@@ -93,6 +112,7 @@ namespace KinectGame_WindowsXNA
         }
 
 
+
         /*/////////////////////////////////////////
          * GAME LOGIC UPDATE FUNCTION
          */////////////////////////////////////////
@@ -101,10 +121,34 @@ namespace KinectGame_WindowsXNA
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
 
-            // TODO: Add your update logic here
+            // LOADING/UPDATING:
+            switch(current_game_state)
+            {
+                case GameState.STARTUP:
+                    {
+                        break;
+                    }
+                case GameState.MENU:
+                    {
+                        break;
+                    }
+                case GameState.PUZZLE_PAINT:
+                    {
+                        break;
+                    }
+                case GameState.PUZZLE_MAKE:
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        break; // do nothing
+                    }
+            }
 
             base.Update(gameTime);
         }
+
 
 
         /*/////////////////////////////////////////
@@ -114,14 +158,41 @@ namespace KinectGame_WindowsXNA
         {
             this.GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
-            if(selector != null)
+            // RENDERING:
+            this.sprite_batch.Begin(); // start the sprite batch
+
+            switch(current_game_state)
             {
-                selector.draw(p_game_time,
-                              this,
-                              ref this.sprite_batch,
-                              ref this.graphics);
+                case GameState.STARTUP:
+                    {
+                        // Draw the logo:
+                        if (logo != null) this.sprite_batch.Draw(this.logo, this.logo_pos, Color.White);
+                        break;
+                    }
+                case GameState.MENU:
+                    {
+                        // Draw the simple main menu:
+                        break;
+                    }
+                case GameState.PUZZLE_PAINT:
+                    {
+                        // Draw the inidividual puzzle-painting game:
+                        break;
+                    }
+                case GameState.PUZZLE_MAKE:
+                    {
+                        // Draw the final puzzle assembly game:
+                        break;
+                    }
+                default:
+                    {
+                        // Draw the logo:
+                        if (logo != null) this.sprite_batch.Draw(this.logo, this.logo_pos, Color.White);
+                        break;
+                    }
             }
+
+            this.sprite_batch.End(); // finish the sprite batch
 
             base.Draw(p_game_time);
         }

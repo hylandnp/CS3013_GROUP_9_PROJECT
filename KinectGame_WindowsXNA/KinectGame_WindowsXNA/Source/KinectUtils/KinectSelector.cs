@@ -18,7 +18,6 @@ using System.Diagnostics;
 namespace KinectGame_WindowsXNA.Source.KinectUtils
 {
     // Utility class to select a valid Kinect Sensor.
-    
     public class KinectSelector
     {
         /*/////////////////////////////////////////
@@ -27,8 +26,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         private readonly Dictionary<KinectStatus, string> status_map = null; // Kinect status feedback
         private readonly DepthImageFormat depth_image_format;
         private readonly ColorImageFormat colour_image_format;
-        private Texture2D ui_background; // background of the Kinect selector UI
-        private SpriteFont ui_font; // font of the Kinect selector UI
+        //private Texture2D ui_background; // background of the Kinect selector UI
+        //private SpriteFont ui_font; // font of the Kinect selector UI
 
         public KinectSensor kinect_sensor { get; private set; }
         public KinectStatus last_status { get; private set; }
@@ -39,15 +38,15 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
           * CONSTRUCTOR(S)/DESTRUCTOR(S)
           *////////////////////////////////////////
         public KinectSelector(ColorImageFormat p_colour_format,
-                              DepthImageFormat p_depth_format,
-                              Texture2D p_background,
-                              SpriteFont p_font)
+                              DepthImageFormat p_depth_format)
+                              //Texture2D p_background,
+                              //SpriteFont p_font)
         {
             // Initialise the Kinect selector...
             this.colour_image_format = p_colour_format;
             this.depth_image_format = p_depth_format;
-            this.ui_font = p_font;
-            this.ui_background = p_background;
+            //this.ui_font = p_font;
+            //this.ui_background = p_background;
 
             status_map = new Dictionary<KinectStatus, string>();
             KinectSensor.KinectSensors.StatusChanged += this.KinectSensorsStatusChanged;
@@ -90,46 +89,46 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * RENDERING FUNCTION(S)
           *////////////////////////////////////////
-        public void draw(GameTime p_time,
-                         Game p_game,
-                         ref SpriteBatch p_sprite_batch,
-                         ref GraphicsDeviceManager p_graphics)
-        {
-            // Render the Kinect selector UI...
-            if(this.ui_background != null && this.ui_font != null)
-            {
-                // If there's no Kinect sensor connected, display status messages:
-                if (this.kinect_sensor == null || this.last_status != KinectStatus.Connected)
-                {
-                    p_sprite_batch.Begin();
+        //public void draw(GameTime p_time,
+        //                 Game p_game,
+        //                 ref SpriteBatch p_sprite_batch,
+        //                 ref GraphicsDeviceManager p_graphics)
+        //{
+        //    // Render the Kinect selector UI...
+        //    if(this.ui_background != null && this.ui_font != null)
+        //    {
+        //        // If there's no Kinect sensor connected, display status messages:
+        //        if (this.kinect_sensor == null || this.last_status != KinectStatus.Connected)
+        //        {
+        //            p_sprite_batch.Begin();
 
-                    Vector2 bg_pos = new Vector2((float)Math.Ceiling((p_game.GraphicsDevice.Viewport.Width - this.ui_background.Width) / 2.0),
-                                                 (float)Math.Ceiling((p_game.GraphicsDevice.Viewport.Height - this.ui_background.Height) / 2.0));
+        //            Vector2 bg_pos = new Vector2((float)Math.Ceiling((p_game.GraphicsDevice.Viewport.Width - this.ui_background.Width) / 2.0),
+        //                                         (float)Math.Ceiling((p_game.GraphicsDevice.Viewport.Height - this.ui_background.Height) / 2.0));
 
-                    // Draw background:
-                    p_sprite_batch.Draw(this.ui_background,
-                                        bg_pos,
-                                        Color.White);
+        //            // Draw background:
+        //            p_sprite_batch.Draw(this.ui_background,
+        //                                bg_pos,
+        //                                Color.White);
 
-                    // Select message:
-                    string msg = "Please wait...";
-                    if(this.kinect_sensor != null)
-                    {
-                        msg = this.status_map[this.last_status];
-                    }
+        //            // Select message:
+        //            string msg = "Please wait...";
+        //            if(this.kinect_sensor != null)
+        //            {
+        //                msg = this.status_map[this.last_status];
+        //            }
 
-                    // Draw the message string:
-                    Vector2 size = this.ui_font.MeasureString(msg);
-                    p_sprite_batch.DrawString(this.ui_font,
-                                              msg,
-                                              new Vector2((float)Math.Ceiling((p_game.GraphicsDevice.Viewport.Width - size.X) / 2.0),
-                                                          bg_pos.Y + ui_background.Height + size.Y),
-                                              Color.White);
+        //            // Draw the message string:
+        //            Vector2 size = this.ui_font.MeasureString(msg);
+        //            p_sprite_batch.DrawString(this.ui_font,
+        //                                      msg,
+        //                                      new Vector2((float)Math.Ceiling((p_game.GraphicsDevice.Viewport.Width - size.X) / 2.0),
+        //                                                  bg_pos.Y + ui_background.Height + size.Y),
+        //                                      Color.White);
 
-                    p_sprite_batch.End();
-                }
-            }
-        }
+        //            p_sprite_batch.End();
+        //        }
+        //    }
+        //}
 
 
 
