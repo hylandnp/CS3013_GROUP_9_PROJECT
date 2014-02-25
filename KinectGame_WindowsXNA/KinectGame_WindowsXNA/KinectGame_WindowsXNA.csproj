@@ -117,7 +117,9 @@
     <Compile Include="Source\Game\PaintSection.cs" />
     <Compile Include="Source\Game\PuzzlePiece.cs" />
     <Compile Include="Source\Interface\Cursor.cs" />
+    <Compile Include="Source\KinectUtils\ColourStreamVideo.cs" />
     <Compile Include="Source\KinectUtils\KinectSelector.cs" />
+    <Compile Include="Source\KinectUtils\SkeletonStreamManager.cs" />
     <Compile Include="Source\ProgramMain.cs" />
     <Compile Include="Source\KinectGame_WindowsXNA.cs" />
   </ItemGroup>

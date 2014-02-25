@@ -11,9 +11,12 @@ using Microsoft.Kinect;
 using System.IO;
 using System.Diagnostics;
 
+using KinectGame_WindowsXNA.Source;
+
 /*CHANGELOG:
  * NEIL - Created class & basic functionality (from Microsoft examples).
  * NEIL - Commented out the rendering resources & functions (now operates as a purely in the background of the game).
+ * NEIL - Added reference object to the base game class.
  */
 
 namespace KinectGame_WindowsXNA.Source.KinectUtils
@@ -27,8 +30,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         private readonly Dictionary<KinectStatus, string> status_map = null; // Kinect status feedback
         private readonly DepthImageFormat depth_image_format;
         private readonly ColorImageFormat colour_image_format;
-        //private Texture2D ui_background; // background of the Kinect selector UI
-        //private SpriteFont ui_font; // font of the Kinect selector UI
+        private KinectGame_WindowsXNA root_game = null; // root game class
 
         public KinectSensor kinect_sensor { get; private set; }
         public KinectStatus last_status { get; private set; }
@@ -39,15 +41,13 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
           * CONSTRUCTOR(S)/DESTRUCTOR(S)
           *////////////////////////////////////////
         public KinectSelector(ColorImageFormat p_colour_format,
-                              DepthImageFormat p_depth_format)
-                              //Texture2D p_background,
-                              //SpriteFont p_font)
+                              DepthImageFormat p_depth_format,
+                              KinectGame_WindowsXNA p_game)
         {
             // Initialise the Kinect selector...
             this.colour_image_format = p_colour_format;
             this.depth_image_format = p_depth_format;
-            //this.ui_font = p_font;
-            //this.ui_background = p_background;
+            this.root_game = p_game;
 
             status_map = new Dictionary<KinectStatus, string>();
             KinectSensor.KinectSensors.StatusChanged += this.KinectSensorsStatusChanged;
@@ -79,8 +79,12 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public void close()
         {
             // Ensure the Kinect sensor is shut down:
-            if(this.kinect_sensor != null)
+            if(this.kinect_sensor != null &&
+               this.kinect_sensor.IsRunning)
             {
+                if(this.kinect_sensor.ColorStream.IsEnabled) this.kinect_sensor.ColorStream.Disable();
+                if(this.kinect_sensor.DepthStream.IsEnabled) this.kinect_sensor.DepthStream.Disable();
+                if(this.kinect_sensor.SkeletonStream.IsEnabled) this.kinect_sensor.SkeletonStream.Disable();
                 this.kinect_sensor.Stop();
             }
         }

@@ -28,14 +28,16 @@ namespace KinectGame_WindowsXNA
         private GraphicsDeviceManager graphics = null;
         private SpriteBatch sprite_batch = null;
         private bool using_kinect_input = false,
-                     status_debug_messages = false;
+                     status_debug_messages = false,
+                     display_video_streams = false;
         private SpriteFont ui_font;
 
         private Texture2D logo = null; // game loading splash/logo
         private Vector2 logo_pos;
 
-        // Kinect selector tool:
-        KinectSelector selector = null;
+        // Kinect tools:
+        public KinectSelector selector = null;
+        public ColourStreamVideo colour_video = null;
 
         // Game states:
         private enum GameState : byte
@@ -57,6 +59,11 @@ namespace KinectGame_WindowsXNA
             // Create the game class...
             this.graphics = new GraphicsDeviceManager(this);
 
+            // Set game flags:
+            this.using_kinect_input = true; // set to false if you want to use the mouse to simulate Kinect input
+            this.status_debug_messages = true; // set to true if you want Kinect status messages displayed in the top-left corner
+            this.display_video_streams = true; // set to true if you want the Kinect video/data streams to be rendered at the right-hand side of the screen (windowed mode only)
+
             // Configure graphical settings:
             this.graphics.PreferredBackBufferWidth = 800;
             this.graphics.PreferredBackBufferHeight = 600;
@@ -76,8 +83,6 @@ namespace KinectGame_WindowsXNA
         protected override void Initialize()
         {
             // Initialise the game class...
-            this.using_kinect_input = true; // set to false if you want to use the mouse to simulate Kinect input
-            this.status_debug_messages = true; // set to true if you want Kinect status messages displayed in the top-left corner
             this.current_game_state = GameState.STARTUP;
 
             // Configure window:
@@ -104,12 +109,23 @@ namespace KinectGame_WindowsXNA
 
             // Create Kinect selector:
             this.selector = new KinectSelector(ColorImageFormat.RgbResolution640x480Fps30,
-                                               DepthImageFormat.Resolution640x480Fps30);
-                                               //this.Content.Load<Texture2D>("Textures/Kinect/SelectorUI_Logo"),
-                                               //this.Content.Load<SpriteFont>("Fonts/Segoe16"));
+                                               DepthImageFormat.Resolution640x480Fps30,
+                                               this);
             ui_font = this.Content.Load<SpriteFont>("Fonts/Segoe16");
-        }
 
+            
+            if(this.display_video_streams)
+            {
+                // Create debug colour stream video:
+                colour_video = new ColourStreamVideo(new Rectangle(this.GraphicsDevice.Viewport.Width - 128,
+                                                                   0, 128, 96),
+                                                     this.Content.Load<Effect>("Effects_Shaders/KinectColorVisualizer"),
+                                                     this.selector,
+                                                     this.GraphicsDevice);
+            }
+            
+        }
+     
 
 
         /*/////////////////////////////////////////
@@ -170,14 +186,14 @@ namespace KinectGame_WindowsXNA
             this.GraphicsDevice.Clear(Color.Black);
 
             // RENDERING:
-            this.sprite_batch.Begin(); // start the sprite batch
-
             switch(current_game_state)
             {
                 case GameState.STARTUP:
                     {
                         // Draw the logo:
+                        this.sprite_batch.Begin();
                         if (logo != null) this.sprite_batch.Draw(this.logo, this.logo_pos, Color.White);
+                        this.sprite_batch.End();
                         break;
                     }
                 case GameState.MENU:
@@ -198,21 +214,35 @@ namespace KinectGame_WindowsXNA
                 default:
                     {
                         // Draw the logo:
+                        this.sprite_batch.Begin();
                         if (logo != null) this.sprite_batch.Draw(this.logo, this.logo_pos, Color.White);
+                        this.sprite_batch.End();
+
                         break;
                     }
+            }
+
+
+            // Draw video debug streams
+            if(display_video_streams &&
+               colour_video != null &&
+               this.selector.kinect_sensor != null &&
+               this.selector.kinect_sensor.Status == KinectStatus.Connected)
+            {
+                colour_video.draw(this.sprite_batch, this.selector);
             }
 
             // Draw debug Kinect status:
             if(status_debug_messages && selector != null)
             {
+                this.sprite_batch.Begin();
                 this.sprite_batch.DrawString(this.ui_font,
                                              this.selector.last_status.ToString(),
                                              new Vector2(4.0f, 2.0f),
                                              Color.White);
+                this.sprite_batch.End();
             }
 
-            this.sprite_batch.End(); // finish the sprite batch
             base.Draw(p_game_time);
         }
     }

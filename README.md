@@ -21,3 +21,7 @@ CHANGELOG:
 Neil (24/02/2014) - Added Kinect sensor selector class based on Microsoft XNA examples.
 
 Neil (25/02/2014) - Modified selector class, moved logo rendering to main class, added switch statement & game state control.
+
+- Also started adding Kinect stream renderers for debugging use.
+
+
