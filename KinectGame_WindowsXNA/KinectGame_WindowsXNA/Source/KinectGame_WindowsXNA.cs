@@ -15,7 +15,7 @@ using KinectGame_WindowsXNA.Source.KinectUtils;
 
 /*CHANGELOG
  * NEIL - Created class & basic functionality.
- * NEIL - Slight modifications.
+ * NEIL - Slight modifications & added Kinect status debug messages that can be displayed on screen.
  */
 
 namespace KinectGame_WindowsXNA
@@ -27,7 +27,9 @@ namespace KinectGame_WindowsXNA
           *////////////////////////////////////////
         private GraphicsDeviceManager graphics = null;
         private SpriteBatch sprite_batch = null;
-        private bool using_kinect_input = false;
+        private bool using_kinect_input = false,
+                     status_debug_messages = false;
+        private SpriteFont ui_font;
 
         private Texture2D logo = null; // game loading splash/logo
         private Vector2 logo_pos;
@@ -75,6 +77,7 @@ namespace KinectGame_WindowsXNA
         {
             // Initialise the game class...
             this.using_kinect_input = true; // set to false if you want to use the mouse to simulate Kinect input
+            this.status_debug_messages = true; // set to true if you want Kinect status messages displayed in the top-left corner
             this.current_game_state = GameState.STARTUP;
 
             // Configure window:
@@ -104,6 +107,7 @@ namespace KinectGame_WindowsXNA
                                                DepthImageFormat.Resolution640x480Fps30);
                                                //this.Content.Load<Texture2D>("Textures/Kinect/SelectorUI_Logo"),
                                                //this.Content.Load<SpriteFont>("Fonts/Segoe16"));
+            ui_font = this.Content.Load<SpriteFont>("Fonts/Segoe16");
         }
 
 
@@ -114,6 +118,8 @@ namespace KinectGame_WindowsXNA
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+
+            if(this.selector != null) this.selector.close(); // close the kinect sensor
         }
 
 
@@ -195,6 +201,15 @@ namespace KinectGame_WindowsXNA
                         if (logo != null) this.sprite_batch.Draw(this.logo, this.logo_pos, Color.White);
                         break;
                     }
+            }
+
+            // Draw debug Kinect status:
+            if(status_debug_messages && selector != null)
+            {
+                this.sprite_batch.DrawString(this.ui_font,
+                                             this.selector.last_status.ToString(),
+                                             new Vector2(4.0f, 2.0f),
+                                             Color.White);
             }
 
             this.sprite_batch.End(); // finish the sprite batch
