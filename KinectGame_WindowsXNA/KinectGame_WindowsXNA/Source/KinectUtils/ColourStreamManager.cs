@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace KinectGame_WindowsXNA.Source.KinectUtils
 {
     // Utility class to render the colour stream output to a texture (from Microsoft examples)...
-    public class ColourStreamVideo
+    public class ColourStreamManager
     {
         /*/////////////////////////////////////////
           * MEMBER DATA
@@ -30,10 +30,10 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * CONSTRUCTOR(S)/DESTRUCTOR(S)
           *////////////////////////////////////////
-        public ColourStreamVideo(Rectangle p_dest_rect,
-                                 Effect p_colour_vis,
-                                 KinectSelector p_kinect,
-                                 GraphicsDevice p_gfx_device)
+        public ColourStreamManager(Rectangle p_dest_rect,
+                                  Effect p_colour_vis,
+                                  KinectManager p_kinect,
+                                  GraphicsDevice p_gfx_device)
         {
             // Initialisation...
             rect = p_dest_rect;
@@ -64,7 +64,6 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                 {
                     // Load array of pixels:
                     current_frame.CopyPixelDataTo(this.colour_data);
-                    this.colour_texture.SetData(this.colour_data);
                 }
             }
         }
@@ -74,10 +73,10 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * COLOUR STREAM HANDLER SHUTDOWN
           *////////////////////////////////////////
-        public void close(KinectSelector p_kinect)
+        public void close(KinectManager p_kinect)
         {
             // Remove colour frame listener...
-            p_kinect.kinect_sensor.ColorFrameReady -= this.updateColourVideo;
+            if(p_kinect != null && p_kinect.kinect_sensor != null) p_kinect.kinect_sensor.ColorFrameReady -= this.updateColourVideo;
         }
 
 
@@ -85,13 +84,15 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * RENDERING FUNCTION(S)
           *////////////////////////////////////////
-        public void draw(SpriteBatch p_sprite_batch, KinectSelector p_kinect)
+        public void draw(SpriteBatch p_sprite_batch, KinectManager p_kinect)
         {
             // Render the colour stream video...
             if(p_kinect != null &&
                p_sprite_batch != null &&
                this.colour_texture != null)
             {
+                this.colour_texture.SetData(this.colour_data);
+
                 p_sprite_batch.Begin(SpriteSortMode.Immediate, null, null, null, null, this.colour_visualiser);
                 p_sprite_batch.Draw(colour_texture,
                                     this.rect,

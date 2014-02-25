@@ -18,10 +18,17 @@ XNA Game Studio 4.0
 
 CHANGELOG:
 
-Neil (24/02/2014) - Added Kinect sensor selector class based on Microsoft XNA examples.
+Neil (24/02/2014)
 
-Neil (25/02/2014) - Modified selector class, moved logo rendering to main class, added switch statement & game state control.
+- Added Kinect sensor selector class based on Microsoft XNA examples.
 
-- Also started adding Kinect stream renderers for debugging use.
+
+Neil (25/02/2014)
+
+- Modified selector class, moved logo rendering to main class, added switch statement & game state control.
+
+- Also started adding Kinect stream managers/renderers for debugging use.
+
+- Re-named selector class to KinectManager, and incorporated the colour stream manager (with debug video output if desired).
 
 

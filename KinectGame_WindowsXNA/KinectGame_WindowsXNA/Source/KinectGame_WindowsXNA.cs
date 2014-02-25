@@ -16,6 +16,7 @@ using KinectGame_WindowsXNA.Source.KinectUtils;
 /*CHANGELOG
  * NEIL - Created class & basic functionality.
  * NEIL - Slight modifications & added Kinect status debug messages that can be displayed on screen.
+ * NEIL - Moved the colour stream manager to the Kinect manager class.
  */
 
 namespace KinectGame_WindowsXNA
@@ -30,14 +31,13 @@ namespace KinectGame_WindowsXNA
         private bool using_kinect_input = false,
                      status_debug_messages = false,
                      display_video_streams = false;
-        private SpriteFont ui_font;
+        //private SpriteFont ui_font;
 
         private Texture2D logo = null; // game loading splash/logo
         private Vector2 logo_pos;
 
-        // Kinect tools:
-        public KinectSelector selector = null;
-        public ColourStreamVideo colour_video = null;
+        // Kinect manager:
+        public KinectManager kinect_manager = null;
 
         // Game states:
         private enum GameState : byte
@@ -108,22 +108,10 @@ namespace KinectGame_WindowsXNA
                                         (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height - this.logo.Height) / 2.0));
 
             // Create Kinect selector:
-            this.selector = new KinectSelector(ColorImageFormat.RgbResolution640x480Fps30,
+            this.kinect_manager = new KinectManager(ColorImageFormat.RgbResolution640x480Fps30,
                                                DepthImageFormat.Resolution640x480Fps30,
                                                this);
-            ui_font = this.Content.Load<SpriteFont>("Fonts/Segoe16");
-
-            
-            if(this.display_video_streams)
-            {
-                // Create debug colour stream video:
-                colour_video = new ColourStreamVideo(new Rectangle(this.GraphicsDevice.Viewport.Width - 128,
-                                                                   0, 128, 96),
-                                                     this.Content.Load<Effect>("Effects_Shaders/KinectColorVisualizer"),
-                                                     this.selector,
-                                                     this.GraphicsDevice);
-            }
-            
+            //ui_font = this.Content.Load<SpriteFont>("Fonts/Segoe16");
         }
      
 
@@ -135,7 +123,7 @@ namespace KinectGame_WindowsXNA
         {
             // TODO: Unload any non ContentManager content here
 
-            if(this.selector != null) this.selector.close(); // close the kinect sensor
+            if(this.kinect_manager != null) this.kinect_manager.close(); // close the kinect sensor
         }
 
 
@@ -224,23 +212,17 @@ namespace KinectGame_WindowsXNA
 
 
             // Draw video debug streams
-            if(display_video_streams &&
-               colour_video != null &&
-               this.selector.kinect_sensor != null &&
-               this.selector.kinect_sensor.Status == KinectStatus.Connected)
+            if(this.display_video_streams &&
+               this.kinect_manager != null)
             {
-                colour_video.draw(this.sprite_batch, this.selector);
+                this.kinect_manager.drawStreamManagers(this.sprite_batch);
             }
 
             // Draw debug Kinect status:
-            if(status_debug_messages && selector != null)
+            if(this.status_debug_messages &&
+               this.kinect_manager != null)
             {
-                this.sprite_batch.Begin();
-                this.sprite_batch.DrawString(this.ui_font,
-                                             this.selector.last_status.ToString(),
-                                             new Vector2(4.0f, 2.0f),
-                                             Color.White);
-                this.sprite_batch.End();
+                this.kinect_manager.drawStatusMessage(this.sprite_batch);
             }
 
             base.Draw(p_game_time);
