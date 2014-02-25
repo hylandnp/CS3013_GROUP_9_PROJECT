@@ -13,6 +13,7 @@ using System.Diagnostics;
 
 /*CHANGELOG:
  * NEIL - Created class & basic functionality (from Microsoft examples).
+ * NEIL - Commented out the rendering resources & functions (now operates as a purely in the background of the game).
  */
 
 namespace KinectGame_WindowsXNA.Source.KinectUtils

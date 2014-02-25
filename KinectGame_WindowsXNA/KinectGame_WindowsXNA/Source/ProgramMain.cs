@@ -1,7 +1,7 @@
 using System;
 
 /*CHANGELOG
- * NEIL - Created class & modified window setup.
+ * NEIL - Created class.
  */
 
 namespace KinectGame_WindowsXNA
@@ -16,10 +16,6 @@ namespace KinectGame_WindowsXNA
         {
             using (KinectGame_WindowsXNA game = new KinectGame_WindowsXNA())
             {
-                // Configure window:
-                game.Window.Title = "Kinect Puzzle Game";
-                game.Window.AllowUserResizing = false;
-
                 // Start the game:
                 game.Run();
             }

@@ -15,6 +15,7 @@ using KinectGame_WindowsXNA.Source.KinectUtils;
 
 /*CHANGELOG
  * NEIL - Created class & basic functionality.
+ * NEIL - Slight modifications.
  */
 
 namespace KinectGame_WindowsXNA
@@ -26,7 +27,6 @@ namespace KinectGame_WindowsXNA
           *////////////////////////////////////////
         private GraphicsDeviceManager graphics = null;
         private SpriteBatch sprite_batch = null;
-        private KinectSensor kinect = null;
         private bool using_kinect_input = false;
 
         private Texture2D logo = null; // game loading splash/logo
@@ -75,6 +75,11 @@ namespace KinectGame_WindowsXNA
         {
             // Initialise the game class...
             this.using_kinect_input = true; // set to false if you want to use the mouse to simulate Kinect input
+            this.current_game_state = GameState.STARTUP;
+
+            // Configure window:
+            this.Window.Title = "Kinect Puzzle Game";
+            this.Window.AllowUserResizing = false;
 
             base.Initialize();
         }
@@ -87,7 +92,7 @@ namespace KinectGame_WindowsXNA
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            this.sprite_batch = new SpriteBatch(GraphicsDevice);
+            this.sprite_batch = new SpriteBatch(this.GraphicsDevice);
 
             // Load game logo:
             this.logo = this.Content.Load<Texture2D>("Textures/Kinect/UI_Logo");
@@ -193,7 +198,6 @@ namespace KinectGame_WindowsXNA
             }
 
             this.sprite_batch.End(); // finish the sprite batch
-
             base.Draw(p_game_time);
         }
     }
