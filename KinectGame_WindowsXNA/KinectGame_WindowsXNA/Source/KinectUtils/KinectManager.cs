@@ -93,9 +93,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public void loadStreamManagers()
         {
             // Create/load the Kinect stream managers...
+            if (this.skeleton_stream != null) this.skeleton_stream.close(this); // close skeleton stream manager if already open
             if (this.colour_stream != null) this.colour_stream.close(this); // close colour stream manager if already open
             if (this.depth_stream != null) this.depth_stream.close(this); // close depth stream manager if already open
-            if (this.skeleton_stream != null) this.skeleton_stream.close(this); // close skeleton stream manager if already open
 
             this.colour_stream = new ColourStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - 256, // small rectange in the far-right top corner
                                                                        0,
@@ -135,14 +135,14 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                this.kinect_sensor.IsRunning)
             {
                 // Close all open stream managers:
+                if (this.skeleton_stream != null) this.skeleton_stream.close(this);
                 if (this.colour_stream != null) this.colour_stream.close(this);
                 if (this.depth_stream != null) this.depth_stream.close(this);
-                if (this.skeleton_stream != null) this.skeleton_stream.close(this);
 
                 // Close all open streams and stop the Kinect sensor:
-                if(this.kinect_sensor.ColorStream.IsEnabled) this.kinect_sensor.ColorStream.Disable();
-                if(this.kinect_sensor.DepthStream.IsEnabled) this.kinect_sensor.DepthStream.Disable();
-                if(this.kinect_sensor.SkeletonStream.IsEnabled) this.kinect_sensor.SkeletonStream.Disable();
+                if (this.kinect_sensor.SkeletonStream.IsEnabled) this.kinect_sensor.SkeletonStream.Disable();
+                if (this.kinect_sensor.ColorStream.IsEnabled) this.kinect_sensor.ColorStream.Disable();
+                if (this.kinect_sensor.DepthStream.IsEnabled) this.kinect_sensor.DepthStream.Disable();
                 this.kinect_sensor.Stop();
             }
         }
@@ -170,7 +170,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
                 if(this.skeleton_stream != null)
                 {
-                    //this.skeleton_stream.draw(p_sprite_batch, this, this.root_game.GraphicsDevice);
+                    this.skeleton_stream.draw(p_sprite_batch, this, this.root_game.GraphicsDevice);
                 }
             }
         }
@@ -208,9 +208,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             if(p_args.Status != KinectStatus.Connected)
             {
                 // Close all stream managers, then stop the current Kinect sensor:
+                if (this.skeleton_stream != null) this.skeleton_stream.close(this);
                 if (this.colour_stream != null) this.colour_stream.close(this);
                 if (this.depth_stream != null) this.depth_stream.close(this);
-                if (this.skeleton_stream != null) this.skeleton_stream.close(this);
 
                 p_args.Sensor.Stop();
             }
@@ -239,6 +239,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                         this.kinect_sensor.ColorStream.Enable(this.colour_image_format);
                         this.kinect_sensor.DepthStream.Enable(this.depth_image_format);
 
+                        this.kinect_sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
+
                         try
                         {
                             // Start the sensor with the current stream settings:
@@ -251,9 +253,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                             this.kinect_sensor = null;
                         }
 
-                        // If the Kinect sensor has been acquired, load the stream managers:
-                        if(this.kinect_sensor.IsRunning)
+                        if (this.kinect_sensor.IsRunning)
                         {
+                            // If the Kinect sensor has been acquired, load the stream managers:
                             this.loadStreamManagers();
                         }
                     }

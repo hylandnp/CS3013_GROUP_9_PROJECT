@@ -44,3 +44,5 @@ Neil (04/03/2014)
 
 - Added basic skeleton stream manager class (still WIP - rendering not working!).
 
+- Skeleton rendering now fixed, added boolean "was_drawn" flag to the manager classes (used to check when to update the texture to save on function calls).
+

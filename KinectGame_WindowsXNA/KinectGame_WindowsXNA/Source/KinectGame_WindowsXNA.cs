@@ -171,12 +171,12 @@ namespace KinectGame_WindowsXNA
         protected override void Draw(GameTime p_game_time)
         {
             // Pre-render the debug skeleton stream video to a texture:
-            //if (this.display_video_streams &&
-            //    this.kinect_manager != null &&
-            //    this.sprite_batch != null)
-            //{
-            //    this.kinect_manager.skeletonStreamPreRender(this.sprite_batch);
-            //}
+            if (this.display_video_streams &&
+                this.kinect_manager != null &&
+                this.sprite_batch != null)
+            {
+                this.kinect_manager.skeletonStreamPreRender(this.sprite_batch);
+            }
 
             this.GraphicsDevice.Clear(Color.Black);
 

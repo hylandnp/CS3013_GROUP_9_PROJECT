@@ -24,6 +24,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         private Texture2D colour_texture = null;
         private Effect colour_visualiser = null; // the XNA effect used to correctly format the RGBA pixel data
         private Rectangle rect;
+        private bool was_drawn = false;
 
 
 
@@ -55,15 +56,20 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public void updateColourVideo(object p_sender, ColorImageFrameReadyEventArgs p_args)
         {
             // Update the colour stream video...
-            using(var current_frame = p_args.OpenColorImageFrame())
+            if (was_drawn)
             {
-                if(current_frame != null &&
-                   this.colour_data != null &&
-                   this.colour_texture != null)
+                using (var current_frame = p_args.OpenColorImageFrame())
                 {
-                    // Load array of pixels:
-                    current_frame.CopyPixelDataTo(this.colour_data);
+                    if (current_frame != null &&
+                       this.colour_data != null &&
+                       this.colour_texture != null)
+                    {
+                        // Load array of pixels:
+                        current_frame.CopyPixelDataTo(this.colour_data);
+                    }
                 }
+
+                was_drawn = false;
             }
         }
 
@@ -97,6 +103,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                     this.rect,
                                     Color.White);
                 p_sprite_batch.End();
+
+                was_drawn = true;
             }
         }
     }

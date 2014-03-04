@@ -23,6 +23,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         private Texture2D depth_texture = null;
         private Effect depth_visualiser = null; // the XNA effect used to correctly format the RGBA pixel data
         private Rectangle rect;
+        private bool was_drawn = false;
 
 
         /*/////////////////////////////////////////
@@ -54,16 +55,21 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
           *////////////////////////////////////////
         public void updateDepthVideo(object p_sender, DepthImageFrameReadyEventArgs p_args)
         {
-            // Update the colour stream video...
-            using (var current_frame = p_args.OpenDepthImageFrame())
+            // Update the depth stream video...
+            if (was_drawn)
             {
-                if (current_frame != null &&
-                   this.depth_data != null &&
-                   this.depth_texture != null)
+                using (var current_frame = p_args.OpenDepthImageFrame())
                 {
-                    // Load array of pixels:
-                    current_frame.CopyPixelDataTo(this.depth_data);
+                    if (current_frame != null &&
+                       this.depth_data != null &&
+                       this.depth_texture != null)
+                    {
+                        // Load array of pixels:
+                        current_frame.CopyPixelDataTo(this.depth_data);
+                    }
                 }
+
+                was_drawn = false;
             }
         }
 
@@ -87,8 +93,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         {
             // Render the depth stream video...
             if (p_kinect != null &&
-               p_sprite_batch != null &&
-               this.depth_texture != null)
+                p_sprite_batch != null &&
+                this.depth_texture != null)
             {
                 this.depth_texture.SetData<short>(this.depth_data);
 
@@ -98,6 +104,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                     Color.White);
                 p_sprite_batch.End();
             }
+
+            was_drawn = true;
         }
     }
 }
