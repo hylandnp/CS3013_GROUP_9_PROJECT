@@ -1,9 +1,11 @@
 CS3013 Group 9 Project
 ======================
 
+
 CS3013 - Software Engineering Group Project Repository for Group 9: "Making Kinections"
 
 ======================
+
 
 REQUIREMENTS/DEPENDENCIES:
 
@@ -13,8 +15,8 @@ Kinect For Windows SDK 1.8
 
 XNA Game Studio 4.0
 
-
 ======================
+
 
 CHANGELOG:
 
@@ -32,3 +34,6 @@ Neil (25/02/2014)
 - Re-named selector class to KinectManager, and incorporated the colour stream manager (with debug video output if desired).
 
 
+Neil (04/03/2014)
+
+- Added depth stream manager class.

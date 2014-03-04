@@ -107,11 +107,10 @@ namespace KinectGame_WindowsXNA
             this.logo_pos = new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width - this.logo.Width) / 2.0),
                                         (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height - this.logo.Height) / 2.0));
 
-            // Create Kinect selector:
+            // Create Kinect manager:
             this.kinect_manager = new KinectManager(ColorImageFormat.RgbResolution640x480Fps30,
-                                               DepthImageFormat.Resolution640x480Fps30,
-                                               this);
-            //ui_font = this.Content.Load<SpriteFont>("Fonts/Segoe16");
+                                                    DepthImageFormat.Resolution640x480Fps30,
+                                                    this);
         }
      
 

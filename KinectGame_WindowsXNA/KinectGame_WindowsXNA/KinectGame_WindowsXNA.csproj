@@ -118,6 +118,7 @@
     <Compile Include="Source\Game\PuzzlePiece.cs" />
     <Compile Include="Source\Interface\Cursor.cs" />
     <Compile Include="Source\KinectUtils\ColourStreamManager.cs" />
+    <Compile Include="Source\KinectUtils\DepthStreamManager.cs" />
     <Compile Include="Source\KinectUtils\KinectManager.cs" />
     <Compile Include="Source\KinectUtils\SkeletonStreamManager.cs" />
     <Compile Include="Source\ProgramMain.cs" />

@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace KinectGame_WindowsXNA.Source.KinectUtils
 {
-    // Utility class to render the colour stream output to a texture (from Microsoft examples)...
+    // Utility class to render the colour stream output to a texture (modified from Microsoft examples)...
     public class ColourStreamManager
     {
         /*/////////////////////////////////////////
@@ -21,7 +21,6 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
           *////////////////////////////////////////
         private byte[] colour_data = null;
         private Texture2D colour_texture = null;
-        private Vector2 scale;
         private Effect colour_visualiser = null; // the XNA effect used to correctly format the RGBA pixel data
         private Rectangle rect;
 
@@ -31,9 +30,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
           * CONSTRUCTOR(S)/DESTRUCTOR(S)
           *////////////////////////////////////////
         public ColourStreamManager(Rectangle p_dest_rect,
-                                  Effect p_colour_vis,
-                                  KinectManager p_kinect,
-                                  GraphicsDevice p_gfx_device)
+                                   Effect p_colour_vis,
+                                   KinectManager p_kinect,
+                                   GraphicsDevice p_gfx_device)
         {
             // Initialisation...
             rect = p_dest_rect;
@@ -46,7 +45,6 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
             p_kinect.kinect_sensor.ColorFrameReady += this.updateColourVideo;
         }
-
 
 
 

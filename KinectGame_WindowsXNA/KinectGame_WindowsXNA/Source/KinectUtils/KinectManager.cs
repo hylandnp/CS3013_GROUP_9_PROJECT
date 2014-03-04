@@ -38,6 +38,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
         // Internal stream managers:
         ColourStreamManager colour_stream = null;
+        DepthStreamManager depth_stream = null;
 
         // Debug status message label:
         private SpriteFont msg_font;
@@ -91,15 +92,24 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public void loadStreamManagers()
         {
             // Create/load the Kinect stream managers...
-            if (colour_stream != null) colour_stream.close(this); // close if already open
+            if (this.colour_stream != null) this.colour_stream.close(this); // close colour stream manager if already open
+            if (this.depth_stream != null) this.depth_stream.close(this); // close depth stream manager if already open
 
-            colour_stream = new ColourStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - 128, // small rectange in the far-right top corner
-                                                                  0,
-                                                                  128,
-                                                                  96 ),
-                                                    this.root_game.Content.Load<Effect>("Effects_Shaders/KinectColorVisualizer"),
-                                                    this,
-                                                    this.root_game.GraphicsDevice);
+            this.colour_stream = new ColourStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - 128, // small rectange in the far-right top corner
+                                                                       0,
+                                                                       128,
+                                                                       96 ),
+                                                         this.root_game.Content.Load<Effect>("Effects_Shaders/KinectColorVisualizer"),
+                                                         this,
+                                                         this.root_game.GraphicsDevice);
+
+            this.depth_stream = new DepthStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - 128, // small rectange in the far-right top corner (below the colour video rect)
+                                                                     96,
+                                                                     128,
+                                                                     96),
+                                                       this.root_game.Content.Load<Effect>("Effects_Shaders/KinectDepthVisualizer"),
+                                                       this,
+                                                       this.root_game.GraphicsDevice);
         }
 
 
@@ -114,7 +124,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                this.kinect_sensor.IsRunning)
             {
                 // Close all open stream managers:
-                if(colour_stream != null) colour_stream.close(this);
+                if (this.colour_stream != null) this.colour_stream.close(this);
+                if (this.depth_stream != null) this.depth_stream.close(this);
 
                 // Close all open streams and stop the Kinect sensor:
                 if(this.kinect_sensor.ColorStream.IsEnabled) this.kinect_sensor.ColorStream.Disable();
@@ -135,9 +146,14 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             if(this.kinect_sensor != null &&
                this.kinect_sensor.Status == KinectStatus.Connected)
             {
-                if(colour_stream != null)
+                if(this.colour_stream != null)
                 {
-                    colour_stream.draw(p_sprite_batch, this);
+                    this.colour_stream.draw(p_sprite_batch, this);
+                }
+
+                if(this.depth_stream != null)
+                {
+                    this.depth_stream.draw(p_sprite_batch, this);
                 }
             }
         }
@@ -165,7 +181,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             if(p_args.Status != KinectStatus.Connected)
             {
                 // Close all stream managers, then stop the current Kinect sensor:
-                if (colour_stream != null) colour_stream.close(this);
+                if (this.colour_stream != null) this.colour_stream.close(this);
+                if (this.depth_stream != null) this.depth_stream.close(this);
 
                 p_args.Sensor.Stop();
             }
