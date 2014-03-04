@@ -1,4 +1,6 @@
 Content\Fonts\Segoe16.xnb
 Content\Effects_Shaders\KinectColorVisualizer.xnb
 Content\Effects_Shaders\KinectDepthVisualizer.xnb
-Content\Textures\Kinect\UI_Logo.xnb
+Content\Textures\Interface\UI_Logo.xnb
+Content\Textures\Kinect\SkeletonBone.xnb
+Content\Textures\Kinect\SkeletonJoint.xnb

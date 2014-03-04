@@ -42,3 +42,5 @@ Neil (04/03/2014)
 
 - Slight modifications to the KinectManager's debug messages & video output.
 
+- Added basic skeleton stream manager class (still WIP - rendering not working!).
+

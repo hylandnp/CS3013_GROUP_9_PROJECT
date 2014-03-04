@@ -44,7 +44,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                                 p_kinect.kinect_sensor.ColorStream.FrameHeight);
             this.colour_data = new byte[p_kinect.kinect_sensor.ColorStream.FramePixelDataLength];
 
-            p_kinect.kinect_sensor.ColorFrameReady += this.updateColourVideo;
+            if(p_kinect.kinect_sensor != null) p_kinect.kinect_sensor.ColorFrameReady += this.updateColourVideo;
         }
 
 

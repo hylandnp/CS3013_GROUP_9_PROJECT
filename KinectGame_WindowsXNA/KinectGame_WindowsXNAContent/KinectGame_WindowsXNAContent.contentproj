@@ -61,8 +61,20 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Kinect\UI_Logo.png">
+    <Compile Include="Textures\Interface\UI_Logo.png">
       <Name>UI_Logo</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Kinect\SkeletonBone.png">
+      <Name>SkeletonBone</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Kinect\SkeletonJoint.png">
+      <Name>SkeletonJoint</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

@@ -44,7 +44,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                                SurfaceFormat.Bgra4444);
             this.depth_data = new short[p_kinect.kinect_sensor.DepthStream.FramePixelDataLength];
 
-            p_kinect.kinect_sensor.DepthFrameReady += this.updateDepthVideo;
+            if(p_kinect.kinect_sensor != null) p_kinect.kinect_sensor.DepthFrameReady += this.updateDepthVideo;
         }
 
 
@@ -85,7 +85,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
           *////////////////////////////////////////
         public void draw(SpriteBatch p_sprite_batch, KinectManager p_kinect)
         {
-            // Render the colour stream video...
+            // Render the depth stream video...
             if (p_kinect != null &&
                p_sprite_batch != null &&
                this.depth_texture != null)

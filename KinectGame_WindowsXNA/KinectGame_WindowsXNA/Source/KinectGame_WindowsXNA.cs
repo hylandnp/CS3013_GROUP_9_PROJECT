@@ -103,7 +103,7 @@ namespace KinectGame_WindowsXNA
             this.sprite_batch = new SpriteBatch(this.GraphicsDevice);
 
             // Load game logo:
-            this.logo = this.Content.Load<Texture2D>("Textures/Kinect/UI_Logo");
+            this.logo = this.Content.Load<Texture2D>("Textures/Interface/UI_Logo");
             this.logo_pos = new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width - this.logo.Width) / 2.0),
                                         (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height - this.logo.Height) / 2.0));
 
@@ -170,6 +170,14 @@ namespace KinectGame_WindowsXNA
           *////////////////////////////////////////
         protected override void Draw(GameTime p_game_time)
         {
+            // Pre-render the debug skeleton stream video to a texture:
+            //if (this.display_video_streams &&
+            //    this.kinect_manager != null &&
+            //    this.sprite_batch != null)
+            //{
+            //    this.kinect_manager.skeletonStreamPreRender(this.sprite_batch);
+            //}
+
             this.GraphicsDevice.Clear(Color.Black);
 
             // RENDERING:
@@ -181,6 +189,7 @@ namespace KinectGame_WindowsXNA
                         this.sprite_batch.Begin();
                         if (logo != null) this.sprite_batch.Draw(this.logo, this.logo_pos, Color.White);
                         this.sprite_batch.End();
+
                         break;
                     }
                 case GameState.MENU:
