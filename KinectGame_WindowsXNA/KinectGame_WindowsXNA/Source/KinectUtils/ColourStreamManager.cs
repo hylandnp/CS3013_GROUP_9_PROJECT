@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 /*CHANGELOG
  * NEIL - Created the class.
+ * NEIL - Slight modifications.
  */
 
 namespace KinectGame_WindowsXNA.Source.KinectUtils

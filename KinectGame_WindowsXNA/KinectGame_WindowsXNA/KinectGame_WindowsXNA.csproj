@@ -116,6 +116,8 @@
     <Compile Include="Source\Game\ImageLoader.cs" />
     <Compile Include="Source\Game\PaintSection.cs" />
     <Compile Include="Source\Game\PuzzlePiece.cs" />
+    <Compile Include="Source\Interface\Button.cs" />
+    <Compile Include="Source\Interface\ColourButton.cs" />
     <Compile Include="Source\Interface\Cursor.cs" />
     <Compile Include="Source\KinectUtils\ColourStreamManager.cs" />
     <Compile Include="Source\KinectUtils\DepthStreamManager.cs" />

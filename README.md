@@ -37,3 +37,8 @@ Neil (25/02/2014)
 Neil (04/03/2014)
 
 - Added depth stream manager class.
+
+- Added some more empty/todo classes for the game.
+
+- Slight modifications to the KinectManager's debug messages & video output.
+

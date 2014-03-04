@@ -63,7 +63,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             this.DiscoverSensor();
 
             this.status_map.Add(KinectStatus.Undefined, "UNKNOWN STATUS MESSAGE");
-            this.status_map.Add(KinectStatus.Connected, string.Empty);
+            this.status_map.Add(KinectStatus.Connected, "Connected.");//string.Empty);
             this.status_map.Add(KinectStatus.DeviceNotGenuine, "Detected device is not genuine!");
             this.status_map.Add(KinectStatus.DeviceNotSupported, "Detected device is not supported!");
             this.status_map.Add(KinectStatus.Disconnected, "Disconnected/Device required!");
@@ -95,7 +95,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             if (this.colour_stream != null) this.colour_stream.close(this); // close colour stream manager if already open
             if (this.depth_stream != null) this.depth_stream.close(this); // close depth stream manager if already open
 
-            this.colour_stream = new ColourStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - 128, // small rectange in the far-right top corner
+            this.colour_stream = new ColourStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - 256, // small rectange in the far-right top corner
                                                                        0,
                                                                        128,
                                                                        96 ),
@@ -103,8 +103,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                                          this,
                                                          this.root_game.GraphicsDevice);
 
-            this.depth_stream = new DepthStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - 128, // small rectange in the far-right top corner (below the colour video rect)
-                                                                     96,
+            this.depth_stream = new DepthStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - 128, // small rectange in the far-right top corner (beside the colour video rect)
+                                                                     0,
                                                                      128,
                                                                      96),
                                                        this.root_game.Content.Load<Effect>("Effects_Shaders/KinectDepthVisualizer"),
@@ -164,7 +164,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             // Render the current status message to the top-left corner of the window...
             p_sprite_batch.Begin();
             p_sprite_batch.DrawString(this.msg_font,
-                                      this.last_status.ToString(),
+                                      this.status_map[this.last_status],
                                       this.msg_label_pos,
                                       Color.White);
             p_sprite_batch.End();
