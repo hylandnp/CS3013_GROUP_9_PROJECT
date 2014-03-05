@@ -31,7 +31,6 @@ namespace KinectGame_WindowsXNA
         private bool using_kinect_input = false,
                      status_debug_messages = false,
                      display_video_streams = false;
-        //private SpriteFont ui_font;
 
         private Texture2D logo = null; // game loading splash/logo
         private Vector2 logo_pos;
@@ -199,12 +198,12 @@ namespace KinectGame_WindowsXNA
                     }
                 case GameState.PUZZLE_PAINT:
                     {
-                        // Draw the inidividual puzzle-painting game:
+                        // Draw the puzzle-painting game:
                         break;
                     }
                 case GameState.PUZZLE_MAKE:
                     {
-                        // Draw the final puzzle assembly game:
+                        // Draw the puzzle-piece assembly game:
                         break;
                     }
                 default:
@@ -219,7 +218,7 @@ namespace KinectGame_WindowsXNA
             }
 
 
-            // Draw video debug streams
+            // Draw debug video streams
             if(this.display_video_streams &&
                this.kinect_manager != null)
             {

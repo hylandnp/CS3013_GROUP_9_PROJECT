@@ -106,6 +106,24 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
 
         /*/////////////////////////////////////////
+          * JOINT POSITION FUNCTION(S)
+          *////////////////////////////////////////
+        public Vector2 getJointPos(JointType p_joint, byte p_skeleton_id, KinectManager p_kinect)
+        {
+            // Return the screen position of the specified skeleton joint (if applicable)...
+            if(p_skeleton_id < skeleton_data.Length)
+            {
+                return this.skeletonToPoint(skeleton_data[p_skeleton_id].Joints[p_joint].Position, p_kinect);
+            }
+            else
+            {
+                return Vector2.Zero;
+            }
+        }
+
+
+
+        /*/////////////////////////////////////////
           * RENDERING FUNCTION(S)
           *////////////////////////////////////////
         public void drawToTexture(KinectManager p_kinect,
@@ -172,7 +190,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                 }
 
                                 p_sprite_batch.Draw(this.joint_texture,
-                                                    this.skeletonToPoint(skeleton.Position, p_kinect),
+                                                    this.skeletonToPoint(j.Position, p_kinect),
                                                     null,
                                                     joint_colour,
                                                     0.0f,
