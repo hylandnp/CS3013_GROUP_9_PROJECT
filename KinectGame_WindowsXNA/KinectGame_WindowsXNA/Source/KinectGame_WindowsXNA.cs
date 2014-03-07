@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 using Microsoft.Kinect;
 using KinectGame_WindowsXNA.Source.KinectUtils;
+using KinectGame_WindowsXNA.Source.Interface;
 
 /*CHANGELOG
  * NEIL - Created class & basic functionality.
@@ -36,7 +37,7 @@ namespace KinectGame_WindowsXNA
         private Vector2 logo_pos;
 
         // Kinect manager:
-        public KinectManager kinect_manager = null;
+        public KinectManager kinect_manager { get; private set; }
 
         // Game states:
         private enum GameState : byte
@@ -46,7 +47,11 @@ namespace KinectGame_WindowsXNA
             PUZZLE_PAINT,
             PUZZLE_MAKE
         }
-        GameState current_game_state = GameState.STARTUP;
+        private GameState current_game_state = GameState.STARTUP;
+
+        // Player position cursors:
+        public Cursor player_1_cursor { get; private set; }
+        public Cursor player_2_cursor { get; private set; }
 
 
 
@@ -135,7 +140,7 @@ namespace KinectGame_WindowsXNA
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
 
             // LOADING/UPDATING:
-            switch(current_game_state)
+            switch(this.current_game_state)
             {
                 case GameState.STARTUP:
                     {
@@ -180,7 +185,7 @@ namespace KinectGame_WindowsXNA
             this.GraphicsDevice.Clear(Color.Black);
 
             // RENDERING:
-            switch(current_game_state)
+            switch(this.current_game_state)
             {
                 case GameState.STARTUP:
                     {

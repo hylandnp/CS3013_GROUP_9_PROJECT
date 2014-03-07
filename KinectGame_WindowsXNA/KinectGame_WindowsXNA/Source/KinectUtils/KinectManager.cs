@@ -69,9 +69,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
             this.debug_video_stream_dimensions = new Vector2(200, 150);
 
-            status_map = new Dictionary<KinectStatus, string>();
-            KinectSensor.KinectSensors.StatusChanged += this.KinectSensorsStatusChanged; // handler function for changes in the Kinect system
-            this.DiscoverSensor();
+            this.status_map = new Dictionary<KinectStatus, string>();
+            KinectSensor.KinectSensors.StatusChanged += this.kinectSensorsStatusChanged; // handler function for changes in the Kinect system
+            this.discoverSensor();
 
             this.status_map.Add(KinectStatus.Undefined, "UNKNOWN STATUS MESSAGE");
             this.status_map.Add(KinectStatus.Connected, "Connected.");//string.Empty);
@@ -218,7 +218,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * INTERNAL SUPPORT FUNCTION(S)
           *////////////////////////////////////////
-        private void KinectSensorsStatusChanged(object p_sender, StatusChangedEventArgs p_args)
+        private void kinectSensorsStatusChanged(object p_sender, StatusChangedEventArgs p_args)
         {
             // Handle Kinect status events (stop the sensor if device is disconnected)...
             if(p_args.Status != KinectStatus.Connected)
@@ -232,12 +232,12 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             }
 
             this.last_status = p_args.Status;
-            this.DiscoverSensor();
+            this.discoverSensor();
         }
 
 
 
-        private void DiscoverSensor()
+        private void discoverSensor()
         {
             // Attempt to connect to a valid Kinect sensor...
             this.kinect_sensor = KinectSensor.KinectSensors.FirstOrDefault();

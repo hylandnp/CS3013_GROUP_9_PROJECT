@@ -71,24 +71,19 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public void updateSkeleton(object p_sender, SkeletonFrameReadyEventArgs p_args)
         {
             // Update the colour stream video...
-            if (was_drawn)
+            using (var current_frame = p_args.OpenSkeletonFrame())
             {
-                using (var current_frame = p_args.OpenSkeletonFrame())
+                if (current_frame != null)
                 {
-                    if (current_frame != null)
+                    // Resize/recreated the skeleton data array if necessary:
+                    if (this.skeleton_data == null ||
+                        this.skeleton_data.Length != current_frame.SkeletonArrayLength)
                     {
-                        // Resize/recreated the skeleton data array if necessary:
-                        if (this.skeleton_data == null ||
-                           this.skeleton_data.Length != current_frame.SkeletonArrayLength)
-                        {
-                            this.skeleton_data = new Skeleton[current_frame.SkeletonArrayLength];
-                        }
-
-                        current_frame.CopySkeletonDataTo(this.skeleton_data);
+                        this.skeleton_data = new Skeleton[current_frame.SkeletonArrayLength];
                     }
-                }
 
-                was_drawn = false;
+                    current_frame.CopySkeletonDataTo(this.skeleton_data);
+                }
             }
         }
 
@@ -111,9 +106,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public Vector2 getJointPos(JointType p_joint, byte p_skeleton_id, KinectManager p_kinect)
         {
             // Return the screen position of the specified skeleton joint (if applicable)...
-            if(p_skeleton_id < skeleton_data.Length)
+            if(p_skeleton_id < this.skeleton_data.Length)
             {
-                return this.skeletonToPoint(skeleton_data[p_skeleton_id].Joints[p_joint].Position, p_kinect);
+                return this.skeletonToPoint(this.skeleton_data[p_skeleton_id].Joints[p_joint].Position, p_kinect);
             }
             else
             {
@@ -132,7 +127,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         {
             // Render the skeleton stream video to the render target...
             if (p_kinect != null &&
-                p_kinect.kinect_sensor != null)
+                p_kinect.kinect_sensor != null &&
+                !this.was_drawn)
             {
                 p_gfx_device.SetRenderTarget(this.render_texture); // draw to the render texture
                 p_gfx_device.Clear(Color.DarkRed);
@@ -151,13 +147,10 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                             this.drawBone(skeleton.Joints, JointType.ShoulderCenter, JointType.ShoulderRight, p_kinect, p_sprite_batch);
                             
                             // Draw lower body
-                            //if(p_kinect.kinect_sensor)
-                            //{
-                                this.drawBone(skeleton.Joints, JointType.ShoulderCenter, JointType.Spine, p_kinect, p_sprite_batch);
-                                this.drawBone(skeleton.Joints, JointType.Spine, JointType.HipCenter, p_kinect, p_sprite_batch);
-                                this.drawBone(skeleton.Joints, JointType.HipCenter, JointType.HipLeft, p_kinect, p_sprite_batch);
-                                this.drawBone(skeleton.Joints, JointType.HipCenter, JointType.HipRight, p_kinect, p_sprite_batch);
-                            //}
+                            this.drawBone(skeleton.Joints, JointType.ShoulderCenter, JointType.Spine, p_kinect, p_sprite_batch);
+                            this.drawBone(skeleton.Joints, JointType.Spine, JointType.HipCenter, p_kinect, p_sprite_batch);
+                            this.drawBone(skeleton.Joints, JointType.HipCenter, JointType.HipLeft, p_kinect, p_sprite_batch);
+                            this.drawBone(skeleton.Joints, JointType.HipCenter, JointType.HipRight, p_kinect, p_sprite_batch);
 
                             // Draw left arm:
                             this.drawBone(skeleton.Joints, JointType.ShoulderLeft, JointType.ElbowLeft, p_kinect, p_sprite_batch);
@@ -219,7 +212,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                 }
 
                 p_gfx_device.SetRenderTarget(null); // back to regular drawing
-                was_drawn = true;
+                this.was_drawn = true;
             }
         }
 
@@ -229,13 +222,17 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                          GraphicsDevice p_gfx_device)
         {
             // Render the skeleton stream video...
-            p_sprite_batch.Begin();
+            if (this.was_drawn)
+            {
+                p_sprite_batch.Begin();
 
-            p_sprite_batch.Draw(this.render_texture,
-                                this.rect,
-                                Color.White);
+                p_sprite_batch.Draw(this.render_texture,
+                                    this.rect,
+                                    Color.White);
 
-            p_sprite_batch.End();
+                p_sprite_batch.End();
+                this.was_drawn = false;
+            }
         }
 
 
