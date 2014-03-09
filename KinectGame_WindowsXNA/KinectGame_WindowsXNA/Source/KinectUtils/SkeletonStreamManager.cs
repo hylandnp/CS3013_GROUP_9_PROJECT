@@ -106,13 +106,15 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public Vector2 getJointPos(JointType p_joint, byte p_skeleton_id, KinectManager p_kinect)
         {
             // Return the screen position of the specified skeleton joint (if applicable)...
-            if(p_skeleton_id < this.skeleton_data.Length)
+            if(p_skeleton_id < this.skeleton_data.Length &&
+               p_skeleton_id >= 0 &&
+               this.skeleton_data[p_skeleton_id].TrackingState == SkeletonTrackingState.Tracked)
             {
                 return this.skeletonToPoint(this.skeleton_data[p_skeleton_id].Joints[p_joint].Position, p_kinect);
             }
             else
             {
-                return Vector2.Zero;
+                return Vector2.Zero; // return (0, 0) co-ordinate if not able to find position
             }
         }
 

@@ -142,6 +142,17 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
 
         /*/////////////////////////////////////////
+          * SKELETON POSITION FUNCTION(S)
+          *////////////////////////////////////////
+        public Vector2 getSkeletonJointPosition(JointType p_joint, byte p_skeleton_id)
+        {
+            // Return the screen co-ordinate position of a specified player's skeleton joint...
+            return this.skeleton_stream.getJointPos(p_joint, p_skeleton_id, this);
+        }
+
+
+
+        /*/////////////////////////////////////////
           * SHUTDOWN/UNLOAD FUNCTION(S)
           *////////////////////////////////////////
         public void close()

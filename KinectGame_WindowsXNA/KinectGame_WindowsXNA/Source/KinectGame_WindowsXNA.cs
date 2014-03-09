@@ -49,7 +49,7 @@ namespace KinectGame_WindowsXNA
         }
         private GameState current_game_state = GameState.STARTUP;
 
-        // Player position cursors:
+        // Player hand position cursors:
         public Cursor player_1_cursor { get; private set; }
         public Cursor player_2_cursor { get; private set; }
 
