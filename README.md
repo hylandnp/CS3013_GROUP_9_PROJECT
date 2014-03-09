@@ -46,3 +46,12 @@ Neil (04/03/2014)
 
 - Skeleton rendering now fixed, added boolean "was_drawn" flag to the manager classes (used to check when to update the texture to save on function calls).
 
+
+Neil (09/03/2014)
+
+- Minor bugfixes.
+
+- Finished most of the SkeletonStreamManager class.
+
+- Started basic hand position tracking (relative to the game screen).
+

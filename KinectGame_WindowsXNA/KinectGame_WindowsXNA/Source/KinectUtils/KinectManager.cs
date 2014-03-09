@@ -144,11 +144,13 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * SKELETON POSITION FUNCTION(S)
           *////////////////////////////////////////
-        public Vector2 getSkeletonJointPosition(JointType p_joint, byte p_skeleton_id)
+        public Vector2 getBasicSkeletonJointPosition(JointType p_joint, byte p_skeleton_id)
         {
-            // Return the screen co-ordinate position of a specified player's skeleton joint...
+            // Return the basic (Kinect-percieved) co-ordinate position of a specified player's skeleton joint...
             return this.skeleton_stream.getJointPos(p_joint, p_skeleton_id, this);
         }
+
+
 
 
 
@@ -262,7 +264,14 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                 {
                     try
                     {
-                        this.kinect_sensor.SkeletonStream.Enable();
+                        this.kinect_sensor.SkeletonStream.Enable(new TransformSmoothParameters()
+                                                                 {
+                                                                    Smoothing = 0.5f,
+                                                                    Correction = 0.25f,
+                                                                    Prediction = 0.25f,
+                                                                    JitterRadius = 0.05f,
+                                                                    MaxDeviationRadius = 0.04f
+                                                                  });
                         this.kinect_sensor.ColorStream.Enable(this.colour_image_format);
                         this.kinect_sensor.DepthStream.Enable(this.depth_image_format);
 
