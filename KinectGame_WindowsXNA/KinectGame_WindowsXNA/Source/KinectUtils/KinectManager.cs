@@ -157,8 +157,6 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
 
 
-
-
         /*/////////////////////////////////////////
           * SHUTDOWN/UNLOAD FUNCTION(S)
           *////////////////////////////////////////

@@ -119,6 +119,20 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         }
 
 
+        public Skeleton[] getSkeletonArray()
+        {
+            if(this.skeleton_data != null)
+            {
+                return this.skeleton_data;
+            }
+            else
+            {
+                return null; // not applicable
+            }
+        }
+
+
+
         /*/////////////////////////////////////////
           * JOINT POSITION FUNCTION(S)
           *////////////////////////////////////////
@@ -168,7 +182,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                 this.skeleton_data[p_skeleton_id] != null &&
                 this.skeleton_data[p_skeleton_id].TrackingState == SkeletonTrackingState.Tracked)
             {
-                return (this.skeleton_data[p_skeleton_id].TrackingState == SkeletonTrackingState.Tracked);
+                return (this.skeleton_data[p_skeleton_id].Joints[p_joint].TrackingState == JointTrackingState.Tracked);
             }
             else
             {
