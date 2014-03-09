@@ -43,7 +43,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public SkeletonStreamManager skeleton_stream { get; private set; }
 
         // Stream manager debug video dimensions:
-        private readonly Vector2 debug_video_stream_dimensions; 
+        private readonly Vector2 debug_video_stream_scale;
 
         // Debug status message label:
         private SpriteFont msg_font;
@@ -67,7 +67,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             this.depth_stream = null;
             this.skeleton_stream = null;
 
-            this.debug_video_stream_dimensions = new Vector2(200, 150);
+            this.debug_video_stream_scale = new Vector2(0.3f, 0.3f);
 
             this.status_map = new Dictionary<KinectStatus, string>();
             KinectSensor.KinectSensors.StatusChanged += this.kinectSensorsStatusChanged; // handler function for changes in the Kinect system
@@ -112,27 +112,32 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
              * NOTE: Stream manager debug video rects arranged in the order = SKELETON - COLOUR - DEPTH (positioned from the top-right corner of the window)
              * Stream managers use the KinectColorVisualizer & KinectDepthVisualizer XNA effect files (from Microsoft samples) to correctly format the texture data.
              */
+            Vector2 temp_size1 = new Vector2((float)Math.Ceiling(this.kinect_sensor.DepthStream.FrameWidth * this.debug_video_stream_scale.X),
+                                             (float)Math.Ceiling(this.kinect_sensor.DepthStream.FrameHeight * this.debug_video_stream_scale.Y));
 
-            this.colour_stream = new ColourStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - (int)this.debug_video_stream_dimensions.X * 2,
+            Vector2 temp_size2 = new Vector2((float)Math.Ceiling(this.kinect_sensor.ColorStream.FrameWidth * this.debug_video_stream_scale.X),
+                                             (float)Math.Ceiling(this.kinect_sensor.ColorStream.FrameHeight * this.debug_video_stream_scale.Y));
+
+            this.colour_stream = new ColourStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - (int)temp_size1.X * 2,
                                                                        0,
-                                                                       (int)this.debug_video_stream_dimensions.X,
-                                                                       (int)this.debug_video_stream_dimensions.Y),
+                                                                       (int)temp_size1.X,
+                                                                       (int)temp_size1.Y),
                                                          this.root_game.Content.Load<Effect>("Effects_Shaders/KinectColorVisualizer"),
                                                          this,
                                                          this.root_game.GraphicsDevice);
 
-            this.depth_stream = new DepthStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - (int)this.debug_video_stream_dimensions.X,
+            this.depth_stream = new DepthStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - (int)temp_size2.X,
                                                                      0,
-                                                                     (int)this.debug_video_stream_dimensions.X,
-                                                                     (int)this.debug_video_stream_dimensions.Y),
+                                                                     (int)temp_size2.X,
+                                                                     (int)temp_size2.Y),
                                                        this.root_game.Content.Load<Effect>("Effects_Shaders/KinectDepthVisualizer"),
                                                        this,
                                                        this.root_game.GraphicsDevice);
 
-            this.skeleton_stream = new SkeletonStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - (int)this.debug_video_stream_dimensions.X * 3,
+            this.skeleton_stream = new SkeletonStreamManager(new Rectangle(this.root_game.GraphicsDevice.Viewport.Width - (int)temp_size1.X * 3,
                                                                            0,
-                                                                           (int)this.debug_video_stream_dimensions.X,
-                                                                           (int)this.debug_video_stream_dimensions.Y),
+                                                                           (int)temp_size1.X,
+                                                                           (int)temp_size1.Y),
                                                              this,
                                                              this.root_game.GraphicsDevice,
                                                              this.root_game.Content.Load<Texture2D>("Textures/Kinect/SkeletonJoint"),
