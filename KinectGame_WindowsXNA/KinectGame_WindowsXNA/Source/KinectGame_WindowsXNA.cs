@@ -115,6 +115,10 @@ namespace KinectGame_WindowsXNA
             this.kinect_manager = new KinectManager(ColorImageFormat.RgbResolution640x480Fps30,
                                                     DepthImageFormat.Resolution640x480Fps30,
                                                     this);
+
+            // Create player cursors:
+            player_1_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorSimpleHand"));
+            player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorSimpleHand"));
         }
      
 

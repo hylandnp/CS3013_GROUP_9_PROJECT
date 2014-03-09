@@ -4,3 +4,5 @@ Content\Effects_Shaders\KinectDepthVisualizer.xnb
 Content\Textures\Interface\UI_Logo.xnb
 Content\Textures\Kinect\SkeletonBone.xnb
 Content\Textures\Kinect\SkeletonJoint.xnb
+Content\Textures\Interface\UI_CursorHand.xnb
+Content\Textures\Interface\UI_CursorSimpleHand.xnb
