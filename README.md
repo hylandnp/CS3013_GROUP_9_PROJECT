@@ -53,5 +53,5 @@ Neil (09/03/2014)
 
 - Finished most of the SkeletonStreamManager class.
 
-- Started basic hand position tracking (relative to the game screen).
+- Added simple basic hand position tracking (relative to the game screen) - needs more work on scaling & offsets.
 

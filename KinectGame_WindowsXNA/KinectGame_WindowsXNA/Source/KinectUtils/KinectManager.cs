@@ -149,10 +149,53 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * SKELETON POSITION FUNCTION(S)
           *////////////////////////////////////////
-        public Vector2 getBasicSkeletonJointPosition(JointType p_joint, byte p_skeleton_id)
+        public Vector2 getMappedJointPosition(JointType p_joint,
+                                              byte p_skeleton_id)
         {
-            // Return the basic (Kinect-percieved) co-ordinate position of a specified player's skeleton joint...
-            return this.skeleton_stream.getJointPos(p_joint, p_skeleton_id, this);
+            if (p_skeleton_id >= 0 &&
+                this.skeleton_stream != null &&
+                this.skeleton_stream.getSkeletonArray() != null &&
+                p_skeleton_id < this.skeleton_stream.getSkeletonArray().Length &&
+                this.skeleton_stream.getSkeleton(p_skeleton_id) != null)
+            {
+                Vector2 temp_pos = Vector2.Zero;
+
+                var width = this.root_game.GraphicsDevice.Viewport.Width;
+                var height = this.root_game.GraphicsDevice.Viewport.Height;
+                var skeleton = this.skeleton_stream.getSkeleton(p_skeleton_id);
+
+                // Scale/offset/adjust to screen size:
+                temp_pos.X = scalePoint(this.root_game.GraphicsDevice.Viewport.Width, 1.0f, skeleton.Joints[p_joint].Position.X);
+                temp_pos.Y = scalePoint(this.root_game.GraphicsDevice.Viewport.Height, 1.0f, -skeleton.Joints[p_joint].Position.Y);
+
+                return temp_pos;
+            }
+            else
+            {
+                return Vector2.Zero; // co-ordinate (0, 0) if not properly tracked
+            }
+        }
+
+
+        private float scalePoint(int p_max_pixels,
+                                 float p_max_skeleton,
+                                 float p_position)
+        {
+            // Scale a position/dimension value:
+            float result = (((p_max_pixels / p_max_skeleton) / 2.0f) * p_position) + (p_max_pixels / 2.0f);
+
+            if(result > p_max_pixels)
+            {
+                return (float)p_max_pixels;
+            }
+            else if(result < 0)
+            {
+                return 0.0f;
+            }
+            else
+            {
+                return result;
+            }
         }
 
 

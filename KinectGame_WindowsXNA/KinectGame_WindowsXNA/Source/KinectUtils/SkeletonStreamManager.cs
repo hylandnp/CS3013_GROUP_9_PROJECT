@@ -136,59 +136,59 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * JOINT POSITION FUNCTION(S)
           *////////////////////////////////////////
-        public Vector2 getJointPos(JointType p_joint, byte p_skeleton_id, KinectManager p_kinect)
-        {
-            // Return the screen position of the specified skeleton joint (if applicable)...
-            if (this.skeleton_data != null &&
-                p_skeleton_id < this.skeleton_data.Length &&
-                p_skeleton_id >= 0 &&
-                this.skeleton_data[p_skeleton_id] != null)
-            {
-                return new Vector2(this.skeleton_data[p_skeleton_id].Joints[p_joint].Position.X,
-                                   this.skeleton_data[p_skeleton_id].Joints[p_joint].Position.Y);
-            }
-            else
-            {
-                return Vector2.Zero; // return (0, 0) co-ordinate if not able to find position
-            }
-        }
+        //public Vector2 getJointPos(JointType p_joint, byte p_skeleton_id, KinectManager p_kinect)
+        //{
+        //    // Return the screen position of the specified skeleton joint (if applicable)...
+        //    if (this.skeleton_data != null &&
+        //        p_skeleton_id < this.skeleton_data.Length &&
+        //        p_skeleton_id >= 0 &&
+        //        this.skeleton_data[p_skeleton_id] != null)
+        //    {
+        //        return new Vector2(this.skeleton_data[p_skeleton_id].Joints[p_joint].Position.X,
+        //                           this.skeleton_data[p_skeleton_id].Joints[p_joint].Position.Y);
+        //    }
+        //    else
+        //    {
+        //        return Vector2.Zero; // return (0, 0) co-ordinate if not able to find position
+        //    }
+        //}
 
 
-        public Vector2 getDepthJointPos(JointType p_joint, byte p_skeleton_id, KinectManager p_kinect)
-        {
-            // Return the depth stream position of the specified skeleton joint (if applicable)...
-            if (this.skeleton_data != null && 
-                p_skeleton_id < this.skeleton_data.Length &&
-                p_skeleton_id >= 0 &&
-                this.skeleton_data[p_skeleton_id] != null)
-            {
-                var temp_point = p_kinect.kinect_sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(this.skeleton_data[p_skeleton_id].Joints[p_joint].Position,
-                                                                                                      p_kinect.kinect_sensor.DepthStream.Format);
-                return new Vector2(temp_point.X,
-                                   temp_point.Y);
-            }
-            else
-            {
-                return Vector2.Zero; // return (0, 0) co-ordinate if not able to find position
-            }
-        }
+        //public Vector2 getDepthJointPos(JointType p_joint, byte p_skeleton_id, KinectManager p_kinect)
+        //{
+        //    // Return the depth stream position of the specified skeleton joint (if applicable)...
+        //    if (this.skeleton_data != null && 
+        //        p_skeleton_id < this.skeleton_data.Length &&
+        //        p_skeleton_id >= 0 &&
+        //        this.skeleton_data[p_skeleton_id] != null)
+        //    {
+        //        var temp_point = p_kinect.kinect_sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(this.skeleton_data[p_skeleton_id].Joints[p_joint].Position,
+        //                                                                                              p_kinect.kinect_sensor.DepthStream.Format);
+        //        return new Vector2(temp_point.X,
+        //                           temp_point.Y);
+        //    }
+        //    else
+        //    {
+        //        return Vector2.Zero; // return (0, 0) co-ordinate if not able to find position
+        //    }
+        //}
 
 
-        public bool currentlyTracking(JointType p_joint, byte p_skeleton_id)
-        {
-            // Check if the current skeleton's joint is being successfully tracked:
-            if (p_skeleton_id < this.skeleton_data.Length &&
-                p_skeleton_id >= 0 &&
-                this.skeleton_data[p_skeleton_id] != null &&
-                this.skeleton_data[p_skeleton_id].TrackingState == SkeletonTrackingState.Tracked)
-            {
-                return (this.skeleton_data[p_skeleton_id].Joints[p_joint].TrackingState == JointTrackingState.Tracked);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //public bool currentlyTracking(JointType p_joint, byte p_skeleton_id)
+        //{
+        //    // Check if the current skeleton's joint is being successfully tracked:
+        //    if (p_skeleton_id < this.skeleton_data.Length &&
+        //        p_skeleton_id >= 0 &&
+        //        this.skeleton_data[p_skeleton_id] != null &&
+        //        this.skeleton_data[p_skeleton_id].TrackingState == SkeletonTrackingState.Tracked)
+        //    {
+        //        return (this.skeleton_data[p_skeleton_id].Joints[p_joint].TrackingState == JointTrackingState.Tracked);
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
 
 
