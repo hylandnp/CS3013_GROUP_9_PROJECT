@@ -143,6 +143,18 @@ namespace KinectGame_WindowsXNA
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
 
+            var mouse_info = Mouse.GetState();
+            Vector3 mouse_pos = Vector3.Zero;
+            mouse_pos.X += mouse_info.X;
+            mouse_pos.Y += mouse_info.Y;
+            mouse_pos.Z = (mouse_info.LeftButton == ButtonState.Pressed)? 1.0f : 0.0f;
+            DateTime lastGestureTime = DateTime.Now;
+            int timeDifference = DateTime.Now.Subtract(lastGestureTime).Milliseconds;
+            /* im not sure where you want to pass the data to the cursor class but
+             * you need to pass the initial position of the cursor and the change in time
+             * 
+            */
+            
             // LOADING/UPDATING:
             switch(this.current_game_state)
             {
