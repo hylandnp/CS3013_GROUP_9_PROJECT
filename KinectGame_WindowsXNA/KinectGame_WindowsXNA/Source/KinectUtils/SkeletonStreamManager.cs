@@ -6,6 +6,8 @@ using System.Text;
 using Microsoft.Kinect;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Fizbin.Kinect.Gestures;
+using Fizbin.Kinect.Gestures.Segments;
 
 /*CHANGELOG
  * NEIL - Created the class.
@@ -29,6 +31,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
         private RenderTarget2D render_texture = null; // rendering target for scaling the skeleton
 
+        // Fizbin Gesture controller:
+        public GestureController fizbin_controller { get; private set; }
+
 
 
         /*/////////////////////////////////////////
@@ -46,6 +51,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             // Load graphical resources:
             this.joint_texture = p_joint;
             this.bone_texture = p_bone;
+            this.fizbin_controller = null;
 
             this.joint_origin = new Vector2((float)Math.Ceiling(this.joint_texture.Width / 2.0),
                                             (float)Math.Ceiling(this.joint_texture.Height / 2.0));
@@ -60,7 +66,15 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                                      p_gfx_device.DisplayMode.Format,
                                                      DepthFormat.Depth24);
 
-            if (p_kinect.kinect_sensor != null) p_kinect.kinect_sensor.SkeletonFrameReady += this.updateSkeleton;
+            if (p_kinect.kinect_sensor != null)
+            {
+                // Start the Fizbin controller:
+                this.fizbin_controller = new GestureController();
+                this.registerGestures();
+
+                p_kinect.kinect_sensor.SkeletonFrameReady += this.updateSkeleton;
+                fizbin_controller.GestureRecognized += this.gestureRecognition;
+            }
         }
 
 
@@ -83,6 +97,16 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                     }
 
                     current_frame.CopySkeletonDataTo(this.skeleton_data);
+
+                    // Check for gestures:
+                    foreach(var skeletons in this.skeleton_data)
+                    {
+                        if(skeletons.TrackingState == SkeletonTrackingState.Tracked &&
+                           this.fizbin_controller != null)
+                        {
+                            this.fizbin_controller.UpdateAllGestures(skeletons);
+                        }
+                    }
                 }
             }
         }
@@ -94,8 +118,12 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
           *////////////////////////////////////////
         public void close(KinectManager p_kinect)
         {
-            // Remove colour frame listener...
-            if (p_kinect != null && p_kinect.kinect_sensor != null) p_kinect.kinect_sensor.SkeletonFrameReady -= this.updateSkeleton;
+            // Remove frame listener...
+            if (p_kinect != null && p_kinect.kinect_sensor != null)
+            {
+                p_kinect.kinect_sensor.SkeletonFrameReady -= this.updateSkeleton;
+                this.fizbin_controller.GestureRecognized -= this.gestureRecognition;
+            }
         }
 
 
@@ -134,61 +162,136 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
 
         /*/////////////////////////////////////////
-          * JOINT POSITION FUNCTION(S)
+          * GESTURE RECOGNITION FUNCTION(S)
           *////////////////////////////////////////
-        //public Vector2 getJointPos(JointType p_joint, byte p_skeleton_id, KinectManager p_kinect)
-        //{
-        //    // Return the screen position of the specified skeleton joint (if applicable)...
-        //    if (this.skeleton_data != null &&
-        //        p_skeleton_id < this.skeleton_data.Length &&
-        //        p_skeleton_id >= 0 &&
-        //        this.skeleton_data[p_skeleton_id] != null)
-        //    {
-        //        return new Vector2(this.skeleton_data[p_skeleton_id].Joints[p_joint].Position.X,
-        //                           this.skeleton_data[p_skeleton_id].Joints[p_joint].Position.Y);
-        //    }
-        //    else
-        //    {
-        //        return Vector2.Zero; // return (0, 0) co-ordinate if not able to find position
-        //    }
-        //}
+        private void gestureRecognition(object p_sender, GestureEventArgs p_args)
+        {
+            // Handle recognised gesture arguments:
+            switch (p_args.GestureName)
+            {
+                //case "Menu":
+                //    {
+                //        Gesture = "Menu";
+                //        break;
+                //    }
+                //case "WaveRight":
+                //    Gesture = "Wave Right";
+                //    break;
+                //case "WaveLeft":
+                //    Gesture = "Wave Left";
+                //    break;
+                //case "JoinedHands":
+                //    Gesture = "Joined Hands";
+                //    break;
+                //case "SwipeLeft":
+                //    Gesture = "Swipe Left";
+                //    break;
+                //case "SwipeRight":
+                //    Gesture = "Swipe Right";
+                //    break;
+                //case "ZoomIn":
+                //    Gesture = "Zoom In";
+                //    break;
+                //case "ZoomOut":
+                //    Gesture = "Zoom Out";
+                //    break;
+
+                default:
+                    break;
+            }
+        }
 
 
-        //public Vector2 getDepthJointPos(JointType p_joint, byte p_skeleton_id, KinectManager p_kinect)
-        //{
-        //    // Return the depth stream position of the specified skeleton joint (if applicable)...
-        //    if (this.skeleton_data != null && 
-        //        p_skeleton_id < this.skeleton_data.Length &&
-        //        p_skeleton_id >= 0 &&
-        //        this.skeleton_data[p_skeleton_id] != null)
-        //    {
-        //        var temp_point = p_kinect.kinect_sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(this.skeleton_data[p_skeleton_id].Joints[p_joint].Position,
-        //                                                                                              p_kinect.kinect_sensor.DepthStream.Format);
-        //        return new Vector2(temp_point.X,
-        //                           temp_point.Y);
-        //    }
-        //    else
-        //    {
-        //        return Vector2.Zero; // return (0, 0) co-ordinate if not able to find position
-        //    }
-        //}
+        private void registerGestures()
+        {
+            // Define all recognisable gestures:
+            IRelativeGestureSegment[] joined_hands_segments = new IRelativeGestureSegment[20];
+            JoinedHandsSegment1 joined_hands_segment = new JoinedHandsSegment1();
+
+            for (int i = 0; i < 20; i++)
+            {
+                // Gesture consists of the same thing 10 times 
+                joined_hands_segments[i] = joined_hands_segment;
+            }
+            this.fizbin_controller.AddGesture("JoinedHands", joined_hands_segments);
 
 
-        //public bool currentlyTracking(JointType p_joint, byte p_skeleton_id)
-        //{
-        //    // Check if the current skeleton's joint is being successfully tracked:
-        //    if (p_skeleton_id < this.skeleton_data.Length &&
-        //        p_skeleton_id >= 0 &&
-        //        this.skeleton_data[p_skeleton_id] != null &&
-        //        this.skeleton_data[p_skeleton_id].TrackingState == SkeletonTrackingState.Tracked)
-        //    {
-        //        return (this.skeleton_data[p_skeleton_id].Joints[p_joint].TrackingState == JointTrackingState.Tracked);
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
+            IRelativeGestureSegment[] menu_segments = new IRelativeGestureSegment[20];
+            MenuSegment1 menu_segment = new MenuSegment1();
+
+            for (int i = 0; i < 20; i++)
+            {
+                // Festure consists of the same thing 20 times 
+                menu_segments[i] = menu_segment;
+            }
+            this.fizbin_controller.AddGesture("Menu", menu_segments);
+
+
+            IRelativeGestureSegment[] swipe_left_segments = new IRelativeGestureSegment[3];
+            swipe_left_segments[0] = new SwipeLeftSegment1();
+            swipe_left_segments[1] = new SwipeLeftSegment2();
+            swipe_left_segments[2] = new SwipeLeftSegment3();
+            this.fizbin_controller.AddGesture("SwipeLeft", swipe_left_segments);
+
+
+            IRelativeGestureSegment[] swipe_right_segments = new IRelativeGestureSegment[3];
+            swipe_right_segments[0] = new SwipeRightSegment1();
+            swipe_right_segments[1] = new SwipeRightSegment2();
+            swipe_right_segments[2] = new SwipeRightSegment3();
+            this.fizbin_controller.AddGesture("SwipeRight", swipe_right_segments);
+
+
+            IRelativeGestureSegment[] wave_right_segments = new IRelativeGestureSegment[6];
+            WaveRightSegment1 wave_right_segment_1 = new WaveRightSegment1();
+            WaveRightSegment2 wave_right_segment_2 = new WaveRightSegment2();
+            wave_right_segments[0] = wave_right_segment_1;
+            wave_right_segments[1] = wave_right_segment_2;
+            wave_right_segments[2] = wave_right_segment_1;
+            wave_right_segments[3] = wave_right_segment_2;
+            wave_right_segments[4] = wave_right_segment_1;
+            wave_right_segments[5] = wave_right_segment_2;
+            this.fizbin_controller.AddGesture("WaveRight", wave_right_segments);
+
+
+            IRelativeGestureSegment[] wave_left_segments = new IRelativeGestureSegment[6];
+            WaveLeftSegment1 wave_left_segment_1 = new WaveLeftSegment1();
+            WaveLeftSegment2 wave_left_segment_2 = new WaveLeftSegment2();
+            wave_left_segments[0] = wave_left_segment_1;
+            wave_left_segments[1] = wave_left_segment_2;
+            wave_left_segments[2] = wave_left_segment_1;
+            wave_left_segments[3] = wave_left_segment_2;
+            wave_left_segments[4] = wave_left_segment_1;
+            wave_left_segments[5] = wave_left_segment_2;
+            this.fizbin_controller.AddGesture("WaveLeft", wave_left_segments);
+
+
+            IRelativeGestureSegment[] zoom_in_segments = new IRelativeGestureSegment[3];
+            zoom_in_segments[0] = new ZoomSegment1();
+            zoom_in_segments[1] = new ZoomSegment2();
+            zoom_in_segments[2] = new ZoomSegment3();
+            this.fizbin_controller.AddGesture("ZoomIn", zoom_in_segments);
+
+
+            IRelativeGestureSegment[] zoom_out_segments = new IRelativeGestureSegment[3];
+            zoom_out_segments[0] = new ZoomSegment3();
+            zoom_out_segments[1] = new ZoomSegment2();
+            zoom_out_segments[2] = new ZoomSegment1();
+            this.fizbin_controller.AddGesture("ZoomOut", zoom_out_segments);
+
+
+            IRelativeGestureSegment[] swipe_up_segments = new IRelativeGestureSegment[3];
+            swipe_up_segments[0] = new SwipeUpSegment1();
+            swipe_up_segments[1] = new SwipeUpSegment2();
+            swipe_up_segments[2] = new SwipeUpSegment3();
+            this.fizbin_controller.AddGesture("SwipeUp", swipe_up_segments);
+
+
+            IRelativeGestureSegment[] swipe_down_segments = new IRelativeGestureSegment[3];
+            swipe_down_segments[0] = new SwipeDownSegment1();
+            swipe_down_segments[1] = new SwipeDownSegment2();
+            swipe_down_segments[2] = new SwipeDownSegment3();
+            this.fizbin_controller.AddGesture("SwipeDown", swipe_down_segments);
+        }
 
 
 

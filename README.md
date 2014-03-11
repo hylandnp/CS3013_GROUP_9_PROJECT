@@ -9,11 +9,13 @@ CS3013 - Software Engineering Group Project Repository for Group 9: "Making Kine
 
 REQUIREMENTS/DEPENDENCIES:
 
-Visual Studio 2013 (for C# and .NET framework)
+Visual Studio 2013 (for C# and .NET framework) - 
 
-Kinect For Windows SDK 1.8
+Kinect For Windows SDK 1.8 - http://www.microsoft.com/en-us/kinectforwindowsdev/downloads.aspx
 
-XNA Game Studio 4.0
+XNA Game Studio 4.0 - http://www.microsoft.com/en-ie/download/details.aspx?id=23714
+
+Fizbin Gesture Library (included) - https://github.com/EvilClosetMonkey/Fizbin.Kinect.Gestures
 
 ======================
 
@@ -55,3 +57,18 @@ Neil (09/03/2014)
 
 - Added simple basic hand position tracking (relative to the game screen) - needs more work on scaling & offsets.
 
+
+Patrick (10/03/2014)
+
+- Added Cursor class.
+
+- Basic Cursor rendering & gestures.
+
+
+Neil (11/03/2014)
+
+- Minor bug & formatting fixes.
+
+- Added the Fizbin Gesture Library for recognising gestures (replacing attempted home-brew code).
+
+- Incorporated Fizbin Gesture Library tracking.

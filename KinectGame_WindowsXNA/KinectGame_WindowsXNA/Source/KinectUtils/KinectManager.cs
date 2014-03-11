@@ -149,7 +149,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * SKELETON POSITION FUNCTION(S)
           *////////////////////////////////////////
-        public Vector2 getMappedJointPosition(JointType p_joint,
+        public Vector3 getMappedJointPosition(JointType p_joint,
                                               byte p_skeleton_id)
         {
             if (p_skeleton_id >= 0 &&
@@ -158,7 +158,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                 p_skeleton_id < this.skeleton_stream.getSkeletonArray().Length &&
                 this.skeleton_stream.getSkeleton(p_skeleton_id) != null)
             {
-                Vector2 temp_pos = Vector2.Zero;
+                Vector3 temp_pos = Vector3.Zero;
 
                 var width = this.root_game.GraphicsDevice.Viewport.Width;
                 var height = this.root_game.GraphicsDevice.Viewport.Height;
@@ -167,12 +167,13 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                 // Scale/offset/adjust to screen size:
                 temp_pos.X = scalePoint(this.root_game.GraphicsDevice.Viewport.Width, 1.0f, skeleton.Joints[p_joint].Position.X);
                 temp_pos.Y = scalePoint(this.root_game.GraphicsDevice.Viewport.Height, 1.0f, -skeleton.Joints[p_joint].Position.Y);
+                temp_pos.Z = skeleton.Joints[p_joint].Position.Z; // get basic skeleton Z-co-ordinate
 
                 return temp_pos;
             }
             else
             {
-                return Vector2.Zero; // co-ordinate (0, 0) if not properly tracked
+                return Vector3.Zero; // co-ordinate (0, 0) if not properly tracked
             }
         }
 

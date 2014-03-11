@@ -18,6 +18,7 @@ using KinectGame_WindowsXNA.Source.Interface;
  * NEIL - Created class & basic functionality.
  * NEIL - Slight modifications & added Kinect status debug messages that can be displayed on screen.
  * NEIL - Moved the colour stream manager to the Kinect manager class.
+ * PATRICK - Added debug mouse tracking functionality & cursor updates/rendering.
  */
 
 namespace KinectGame_WindowsXNA
@@ -117,8 +118,14 @@ namespace KinectGame_WindowsXNA
                                                     this);
 
             // Create player cursors:
-            player_1_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorSimpleHand"));
-            player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorSimpleHand"));
+            player_1_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorSimpleHand"),
+                                         JointType.HandLeft,
+                                         0.3f,
+                                         0);
+            player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorSimpleHand"),
+                                         JointType.HandRight,
+                                         0.3f,
+                                         0);
         }
      
 
@@ -138,28 +145,54 @@ namespace KinectGame_WindowsXNA
         /*/////////////////////////////////////////
          * GAME LOGIC UPDATE FUNCTION
          */////////////////////////////////////////
-        protected override void Update(GameTime gameTime)
+        protected override void Update(GameTime p_game_time)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) this.Exit();
+            // Update the game before rendering...
+            Vector3 temp_pos = Vector3.Zero;
+            TimeSpan time_span = p_game_time.ElapsedGameTime;
 
-            var mouse_info = Mouse.GetState();
-            Vector3 mouse_pos = Vector3.Zero;
-            mouse_pos.X += mouse_info.X;
-            mouse_pos.Y += mouse_info.Y;
-            mouse_pos.Z = (mouse_info.LeftButton == ButtonState.Pressed)? 1.0f : 0.0f;
-            DateTime lastGestureTime = DateTime.Now;
-            int timeDifference = DateTime.Now.Subtract(lastGestureTime).Milliseconds;
-            /* im not sure where you want to pass the data to the cursor class but
-             * you need to pass the initial position of the cursor and the change in time
-             * 
-            */
+            // DEBUG - using mouse input if not testing with Kinect:
+            if(!this.using_kinect_input)
+            {
+                // Get the position of the mouse:
+                var mouse_info = Mouse.GetState();
+                temp_pos.X = mouse_info.X;
+                temp_pos.Y = mouse_info.Y;
+            }
+
+            // Update the player cursors:
+            if(this.player_1_cursor != null)
+            {
+                if(this.using_kinect_input)
+                {
+                    // Update position with the Kinect tracking of Player 1's preferred hand:
+                    this.player_1_cursor.update(this.kinect_manager.getMappedJointPosition(this.player_1_cursor.hand_joint,
+                                                                                           this.player_1_cursor.player_id),
+                                                time_span);
+                }
+                else
+                {
+                    // Update position with the mouse/screen co-ordinates for testing purposes:
+                    this.player_1_cursor.update(temp_pos,
+                                                time_span);
+                }
+            }
+
+            if(this.player_2_cursor != null &&
+               this.using_kinect_input)
+            {
+                // Update position with the Kinect tracking of Player 2's preferred hand:
+                this.player_2_cursor.update(this.kinect_manager.getMappedJointPosition(this.player_2_cursor.hand_joint,
+                                                                                       this.player_2_cursor.player_id),
+                                            time_span);
+            }
             
-            // LOADING/UPDATING:
+            // LOADING/UPDATING STATE(S):
             switch(this.current_game_state)
             {
                 case GameState.STARTUP:
                     {
+                        this.current_game_state = GameState.MENU;
                         break;
                     }
                 case GameState.MENU:
@@ -180,7 +213,7 @@ namespace KinectGame_WindowsXNA
                     }
             }
 
-            base.Update(gameTime);
+            base.Update(p_game_time);
         }
 
 
@@ -200,7 +233,7 @@ namespace KinectGame_WindowsXNA
 
             this.GraphicsDevice.Clear(Color.Black);
 
-            // RENDERING:
+            // RENDERING GAME STATE(S):
             switch(this.current_game_state)
             {
                 case GameState.STARTUP:
@@ -239,18 +272,30 @@ namespace KinectGame_WindowsXNA
             }
 
 
-            // Draw debug video streams
+            // Draw debug video streams (if required):
             if(this.display_video_streams &&
                this.kinect_manager != null)
             {
                 this.kinect_manager.drawStreamManagers(this.sprite_batch);
             }
 
-            // Draw debug Kinect status:
+            // Draw debug Kinect status (if required):
             if(this.status_debug_messages &&
                this.kinect_manager != null)
             {
                 this.kinect_manager.drawStatusMessage(this.sprite_batch);
+            }
+
+            // Draw player hand cursors:
+            if (this.player_1_cursor != null)
+            {
+                this.player_1_cursor.draw(this.sprite_batch);
+            }
+
+            if (this.player_2_cursor != null &&
+                this.using_kinect_input)
+            {
+                this.player_2_cursor.draw(this.sprite_batch);
             }
 
             base.Draw(p_game_time);
