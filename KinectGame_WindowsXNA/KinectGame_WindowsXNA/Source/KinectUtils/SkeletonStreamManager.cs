@@ -36,13 +36,10 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         // Fizbin Gesture controller:
         public GestureController fizbin_controller { get; private set; }
 
-        public string last_gesture_1 { get; private set; }
-        public string last_gesture_2 { get; private set; }
-
-        public int[] player_id { get; private set; }
-
         private Timer clear_timer;
 
+        public Dictionary<int, SkeletonPlayer> skeleton_players { get; private set; } // tracking info for skeletons
+        public List<int> player_refs { get; private set; } // external/visible tracking info for skeletons
 
 
         /*/////////////////////////////////////////
@@ -75,6 +72,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                                      p_gfx_device.DisplayMode.Format,
                                                      DepthFormat.Depth24);
 
+            this.skeleton_players = new Dictionary<int, SkeletonPlayer>();
+            this.player_refs = new List<int>();
+
             if (p_kinect.kinect_sensor != null)
             {
                 // Start the Fizbin controller:
@@ -106,29 +106,57 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                         this.skeleton_data.Length != current_frame.SkeletonArrayLength)
                     {
                         this.skeleton_data = new Skeleton[current_frame.SkeletonArrayLength];
-                        this.last_gesture_1 = ""; // tracking skeleton 1
-                        this.last_gesture_2 = ""; // tracking skeleton 2
-
-                        this.player_id = new int[2];
                     }
 
                     current_frame.CopySkeletonDataTo(this.skeleton_data);
+                    List<int> skeleton_list = new List<int>();
 
                     // Check for gestures:
-                    foreach(var skeletons in this.skeleton_data)
+                    foreach(var skeleton in this.skeleton_data)
                     {
-                        if(skeletons.TrackingState == SkeletonTrackingState.Tracked &&
-                           this.fizbin_controller != null)
+                        if(skeleton.TrackingState == SkeletonTrackingState.Tracked)
                         {
-                            Console.WriteLine(skeletons.TrackingId);
+                            skeleton_list.Add(skeleton.TrackingId);
 
-                           // if(this.player_id_1 )
+                            // Check if new skeleton:
+                            if (!this.skeleton_players.ContainsKey(skeleton.TrackingId))
                             {
+                                SkeletonPlayer new_player = new SkeletonPlayer();
 
+                                new_player.tracking_id = skeleton.TrackingId;
+                                new_player.last_gesture = "";
+                                new_player.skeleton = skeleton;
+
+                                this.skeleton_players.Add(new_player.tracking_id, new_player);
                             }
 
-                            this.fizbin_controller.UpdateAllGestures(skeletons);
+                            // Remove/clean-up any extra/unwanted skeletons:
+                            if(skeleton_list.Count < this.skeleton_players.Count)
+                            {
+                                List<int> active_list = new List<int>(this.skeleton_players.Keys);
+
+                                for (int i = 0; i < skeleton_list.Count; i++ )
+                                {
+                                    if(active_list.Contains(skeleton_list[i]))
+                                    {
+                                        active_list.Remove(skeleton_list[i]);
+                                    }
+                                }
+
+                                for (int i = 0; i < active_list.Count; i++)
+                                {
+                                    this.skeleton_players.Remove(active_list[i]);
+                                }
+                            }
                         }
+                    }
+
+                    this.player_refs = this.skeleton_players.Keys.ToList();
+
+                    // Process current skeletons:
+                    foreach (var id in this.player_refs)
+                    {
+                        this.fizbin_controller.UpdateAllGestures(skeleton_players[id].skeleton);
                     }
                 }
             }
@@ -253,22 +281,18 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                     }
             }
 
-            if (this.last_gesture_1 != null && this.last_gesture_2 != null)
+            if (this.skeleton_players.ContainsKey(p_args.TrackingId) &&
+                this.skeleton_players[p_args.TrackingId] != null)
             {
-                if((temp_gesture != this.last_gesture_1) &&
+                //var current_skeleton = this.skeleton_players[p_args.TrackingId];
+
+                if(this.skeleton_players[p_args.TrackingId].last_gesture != temp_gesture &&
                    this.PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Gesture"));
                 }
 
-                if(p_args.TrackingId == this.skeleton_data[0].TrackingId)
-                {
-                    this.last_gesture_1 = temp_gesture;
-                }
-                else if(p_args.TrackingId == this.skeleton_data[1].TrackingId)
-                {
-                    this.last_gesture_2 = temp_gesture;
-                }
+                this.skeleton_players[p_args.TrackingId].last_gesture = temp_gesture;
             }
 
             this.clear_timer.Start();
@@ -369,11 +393,11 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
         private void clearGestures(object p_sender, ElapsedEventArgs p_args)
         {
-            for (byte i = 0; i < this.last_gesture_1.Length; i++)
+            foreach (var id in this.player_refs)
             {
-                this.last_gesture_1 = "";
-                this.last_gesture_2 = "";
+                this.skeleton_players[id].last_gesture = "";
             }
+
             this.clear_timer.Stop();
         }
 

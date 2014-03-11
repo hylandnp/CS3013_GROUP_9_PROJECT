@@ -123,9 +123,12 @@ namespace KinectGame_WindowsXNA.Source.Interface
         public void draw(SpriteBatch p_sprite_batch)
         {
             // Render the cursor:
-            p_sprite_batch.Begin();
-            p_sprite_batch.Draw(this.hand_texture, this.hand_dest_rect, this.hand_source_rect, Color.White, 0.0f, this.hand_origin, SpriteEffects.None, 0.0f);
-            p_sprite_batch.End();
+            if(this.current_pos != Vector3.Zero)
+            {
+                p_sprite_batch.Begin();
+                p_sprite_batch.Draw(this.hand_texture, this.hand_dest_rect, this.hand_source_rect, Color.White, 0.0f, this.hand_origin, SpriteEffects.None, 0.0f);
+                p_sprite_batch.End();
+            }
         }
     }
 }

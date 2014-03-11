@@ -140,6 +140,7 @@
     <Compile Include="Source\KinectUtils\ColourStreamManager.cs" />
     <Compile Include="Source\KinectUtils\DepthStreamManager.cs" />
     <Compile Include="Source\KinectUtils\KinectManager.cs" />
+    <Compile Include="Source\KinectUtils\SkeletonPlayer.cs" />
     <Compile Include="Source\KinectUtils\SkeletonStreamManager.cs" />
     <Compile Include="Source\ProgramMain.cs" />
     <Compile Include="Source\KinectGame_WindowsXNA.cs" />

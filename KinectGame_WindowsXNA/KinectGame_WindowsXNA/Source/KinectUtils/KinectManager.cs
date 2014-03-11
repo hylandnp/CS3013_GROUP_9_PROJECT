@@ -45,6 +45,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         // Stream manager debug video dimensions:
         private readonly Vector2 debug_video_stream_scale;
 
+        // Player skeleton references:
+        private int[] player_id_refs = null;
+
         // Debug status message label:
         private SpriteFont msg_font;
         private Vector2 msg_label_pos;
@@ -68,6 +71,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             this.skeleton_stream = null;
 
             this.debug_video_stream_scale = new Vector2(0.3f, 0.3f);
+            this.player_id_refs = new int[2];
 
             this.status_map = new Dictionary<KinectStatus, string>();
             KinectSensor.KinectSensors.StatusChanged += this.kinectSensorsStatusChanged; // handler function for changes in the Kinect system
@@ -150,6 +154,37 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
           * SKELETON POSITION FUNCTION(S)
           *////////////////////////////////////////
         public Vector3 getMappedJointPosition(JointType p_joint,
+                                              byte p_player_id)
+        {
+            // Return the converted screen co-ordinates of the specified player's joint:
+            if (p_player_id >= 0 &&
+                this.skeleton_stream != null &&
+                this.skeleton_stream.skeleton_players != null &&
+                this.skeleton_stream.player_refs != null &&
+                p_player_id < this.skeleton_stream.player_refs.Count &&
+                p_player_id < this.skeleton_stream.skeleton_players.Count)
+            {
+                Vector3 temp_pos = Vector3.Zero;
+                var width = this.root_game.GraphicsDevice.Viewport.Width;
+                var height = this.root_game.GraphicsDevice.Viewport.Height;
+
+                // Get the player's skeleton:
+                var player = this.skeleton_stream.skeleton_players[this.skeleton_stream.player_refs[p_player_id]];
+
+                temp_pos.X = scalePoint(width, 1.0f, player.skeleton.Joints[p_joint].Position.X);
+                temp_pos.Y = scalePoint(height, 1.0f, -player.skeleton.Joints[p_joint].Position.Y);
+                temp_pos.Z = player.skeleton.Joints[p_joint].Position.Z; // get basic skeleton Z-co-ordinate
+
+                return temp_pos;
+            }
+            else
+            {
+                return Vector3.Zero;
+            }
+        }
+
+
+        public Vector3 getMappedJointPosition2(JointType p_joint,
                                               byte p_skeleton_id)
         {
             if (p_skeleton_id >= 0 &&
@@ -280,24 +315,19 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             if(this.skeleton_stream != null &&
                this.skeleton_stream.fizbin_controller != null)
             {
+                string temp = "";
+
+                // Get all currently tracked skeletons:
+                foreach (var id in this.skeleton_stream.player_refs)
+                {
+                    temp += "TrackingID: " + Convert.ToString(id) + " - " + this.skeleton_stream.skeleton_players[id].last_gesture + "\n";
+                }
+
                 p_sprite_batch.Begin();
-
-                if(this.skeleton_stream.last_gesture_1 != null)
-                {
-                    p_sprite_batch.DrawString(this.msg_font,
-                                              "Player 1: " + this.skeleton_stream.last_gesture_1,
-                                              new Vector2(10, 400),
-                                              Color.Wheat);
-                }
-
-                if (this.skeleton_stream.last_gesture_2 != null)
-                {
-                    p_sprite_batch.DrawString(this.msg_font,
-                                              "Player 2: " + this.skeleton_stream.last_gesture_2,
-                                              new Vector2(10, 450),
-                                              Color.Wheat);
-                }
-
+                p_sprite_batch.DrawString(this.msg_font,
+                                          temp,
+                                          new Vector2(4, 300),
+                                          Color.Wheat);
                 p_sprite_batch.End();
             }
         }
