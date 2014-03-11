@@ -35,7 +35,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
         // Fizbin Gesture controller:
         public GestureController fizbin_controller { get; private set; }
-        public string[] last_gesture { get; private set; }
+        public string last_gesture_1 { get; private set; }
+        public string last_gesture_2 { get; private set; }
 
         private Timer clear_timer;
 
@@ -102,7 +103,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                         this.skeleton_data.Length != current_frame.SkeletonArrayLength)
                     {
                         this.skeleton_data = new Skeleton[current_frame.SkeletonArrayLength];
-                        this.last_gesture = new string[current_frame.SkeletonArrayLength]; // tracking skeletons
+                        this.last_gesture_1 = ""; // tracking skeleton 1
+                        this.last_gesture_2 = ""; // tracking skeleton 2
                     }
 
                     current_frame.CopySkeletonDataTo(this.skeleton_data);
@@ -229,16 +231,15 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                     }
             }
 
-            if (this.last_gesture != null)
+            if (this.last_gesture_1 != null)
             {
-                if(temp_gesture != this.last_gesture[p_args.TrackingId] &&
+                if(((temp_gesture != this.last_gesture_1)) &&
                    this.PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Gesture"));
                 }
 
-                this.last_gesture[p_args.TrackingId] = temp_gesture;
-                Console.WriteLine(p_args.TrackingId + ": " + temp_gesture);
+                this.last_gesture_1 = temp_gesture;
             }
 
             this.clear_timer.Start();
@@ -339,10 +340,10 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
         private void clearGestures(object p_sender, ElapsedEventArgs p_args)
         {
-            for (byte i = 0; i < this.last_gesture.Length; i++)
+            for (byte i = 0; i < this.last_gesture_1.Length; i++)
             {
-                Console.WriteLine(this.last_gesture[i]);
-                this.last_gesture[i] = "";
+                this.last_gesture_1 = "";
+                this.last_gesture_2 = "";
             }
             this.clear_timer.Stop();
         }

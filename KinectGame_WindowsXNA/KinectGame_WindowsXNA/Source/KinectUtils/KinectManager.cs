@@ -277,18 +277,25 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public void drawSkeletonGesture(SpriteBatch p_sprite_batch)
         {
             // Render the current recognised gesture from the Fizbin/skeleton stream manager:
-            if(this.skeleton_stream.fizbin_controller != null &&
-               this.skeleton_stream.last_gesture != null)
+            if(this.skeleton_stream != null &&
+               this.skeleton_stream.fizbin_controller != null)
             {
                 p_sprite_batch.Begin();
 
-                if(this.skeleton_stream.last_gesture != null &&
-                   this.skeleton_stream.last_gesture[0] != null)
+                if(this.skeleton_stream.last_gesture_1 != null)
                 {
                     p_sprite_batch.DrawString(this.msg_font,
-                                          this.skeleton_stream.last_gesture[0],
-                                          new Vector2(10, 400),
-                                          Color.Wheat);
+                                              "Player 1: " + this.skeleton_stream.last_gesture_1,
+                                              new Vector2(10, 400),
+                                              Color.Wheat);
+                }
+
+                if (this.skeleton_stream.last_gesture_2 != null)
+                {
+                    p_sprite_batch.DrawString(this.msg_font,
+                                              "Player 2: " + this.skeleton_stream.last_gesture_2,
+                                              new Vector2(10, 450),
+                                              Color.Wheat);
                 }
 
                 p_sprite_batch.End();

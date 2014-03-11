@@ -26,11 +26,12 @@ namespace KinectGame_WindowsXNA.Source.Interface
         private Vector3 current_pos,
                         previous_pos;
 
-        public JointType hand_joint { get; set; }
+        private JointType hand_joint;
 
         // Rendering info:
         private Texture2D hand_texture;
-        private Rectangle hand_dest_rect;
+        private Rectangle hand_dest_rect,
+                          hand_source_rect;
         private Vector2 hand_origin;
 
 
@@ -54,8 +55,12 @@ namespace KinectGame_WindowsXNA.Source.Interface
                                            (float)Math.Ceiling(this.hand_texture.Bounds.Height / 2.0f));
 
             this.hand_dest_rect = new Rectangle(0, 0,
-                                                (int)Math.Ceiling(this.hand_texture.Bounds.Width * p_scale),
+                                                (int)Math.Ceiling((this.hand_texture.Bounds.Width - 256) * p_scale),
                                                 (int)Math.Ceiling(this.hand_texture.Bounds.Height * p_scale));
+
+            // Reset hands & texture source rectangle:
+            this.swapHands();
+            this.swapHands();
 
             this.current_pos = Vector3.Zero;
             this.previous_pos = Vector3.Zero;
@@ -65,8 +70,7 @@ namespace KinectGame_WindowsXNA.Source.Interface
 
         /*/////////////////////////////////////////
           * UPDATE FUNCTION(S)
-          */
-        ///////////////////////////////////////
+          *////////////////////////////////////////
         public void update(Vector3 p_new_position,
                            TimeSpan p_new_time)
         {
@@ -81,14 +85,46 @@ namespace KinectGame_WindowsXNA.Source.Interface
 
 
         /*/////////////////////////////////////////
+          * GETTER/SETTER FUNCTION(S)
+          *////////////////////////////////////////
+        public JointType getHandJoint()
+        {
+            return this.hand_joint;
+        }
+
+
+        public void swapHands()
+        {
+            if(this.hand_joint == JointType.HandLeft)
+            {
+                this.hand_joint = JointType.HandRight;
+
+                // Set right-hand of texture drawable:
+                this.hand_source_rect = new Rectangle(265, 0,
+                                                      this.hand_texture.Bounds.Width - 265,
+                                                      this.hand_texture.Bounds.Height);
+            }
+            else
+            {
+                this.hand_joint = JointType.HandLeft;
+
+                // Set right-hand of texture drawable:
+                this.hand_source_rect = new Rectangle(0, 0,
+                                                      this.hand_texture.Bounds.Width - 265,
+                                                      this.hand_texture.Bounds.Height);
+            }
+        }
+
+
+
+        /*/////////////////////////////////////////
           * RENDERING FUNCTION(S)
-          */
-        ///////////////////////////////////////
+          *////////////////////////////////////////
         public void draw(SpriteBatch p_sprite_batch)
         {
             // Render the cursor:
             p_sprite_batch.Begin();
-            p_sprite_batch.Draw(this.hand_texture, this.hand_dest_rect, null, Color.White, 0.0f, this.hand_origin, SpriteEffects.None, 0.0f);
+            p_sprite_batch.Draw(this.hand_texture, this.hand_dest_rect, this.hand_source_rect, Color.White, 0.0f, this.hand_origin, SpriteEffects.None, 0.0f);
             p_sprite_batch.End();
         }
     }

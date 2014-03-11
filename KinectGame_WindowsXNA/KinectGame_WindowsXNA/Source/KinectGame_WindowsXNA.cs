@@ -118,11 +118,11 @@ namespace KinectGame_WindowsXNA
                                                     this);
 
             // Create player cursors:
-            player_1_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorSimpleHand"),
+            player_1_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
                                          JointType.HandLeft,
                                          0.3f,
                                          0);
-            player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorSimpleHand"),
+            player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
                                          JointType.HandRight,
                                          0.3f,
                                          0);
@@ -135,8 +135,6 @@ namespace KinectGame_WindowsXNA
           *////////////////////////////////////////
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
-
             if(this.kinect_manager != null) this.kinect_manager.close(); // close the kinect sensor
         }
 
@@ -167,7 +165,7 @@ namespace KinectGame_WindowsXNA
                 if(this.using_kinect_input)
                 {
                     // Update position with the Kinect tracking of Player 1's preferred hand:
-                    this.player_1_cursor.update(this.kinect_manager.getMappedJointPosition(this.player_1_cursor.hand_joint,
+                    this.player_1_cursor.update(this.kinect_manager.getMappedJointPosition(this.player_1_cursor.getHandJoint(),
                                                                                            this.player_1_cursor.player_id),
                                                 time_span);
                 }
@@ -183,7 +181,7 @@ namespace KinectGame_WindowsXNA
                this.using_kinect_input)
             {
                 // Update position with the Kinect tracking of Player 2's preferred hand:
-                this.player_2_cursor.update(this.kinect_manager.getMappedJointPosition(this.player_2_cursor.hand_joint,
+                this.player_2_cursor.update(this.kinect_manager.getMappedJointPosition(this.player_2_cursor.getHandJoint(),
                                                                                        this.player_2_cursor.player_id),
                                             time_span);
             }
