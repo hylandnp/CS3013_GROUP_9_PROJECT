@@ -35,8 +35,11 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
         // Fizbin Gesture controller:
         public GestureController fizbin_controller { get; private set; }
+
         public string last_gesture_1 { get; private set; }
         public string last_gesture_2 { get; private set; }
+
+        public int[] player_id { get; private set; }
 
         private Timer clear_timer;
 
@@ -105,6 +108,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                         this.skeleton_data = new Skeleton[current_frame.SkeletonArrayLength];
                         this.last_gesture_1 = ""; // tracking skeleton 1
                         this.last_gesture_2 = ""; // tracking skeleton 2
+
+                        this.player_id = new int[2];
                     }
 
                     current_frame.CopySkeletonDataTo(this.skeleton_data);
@@ -115,6 +120,13 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                         if(skeletons.TrackingState == SkeletonTrackingState.Tracked &&
                            this.fizbin_controller != null)
                         {
+                            Console.WriteLine(skeletons.TrackingId);
+
+                           // if(this.player_id_1 )
+                            {
+
+                            }
+
                             this.fizbin_controller.UpdateAllGestures(skeletons);
                         }
                     }
@@ -214,6 +226,16 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                         temp_gesture = "Swipe Left Hand (To The Right)";
                         break;
                     }
+                case "SwipeUp":
+                    {
+                        temp_gesture = "Swipe Up";
+                        break;
+                    }
+                case "SwipeDown":
+                    {
+                        temp_gesture = "Swipe Down";
+                        break;
+                    }
                 case "ZoomIn":
                     {
                         temp_gesture = "Zoom In (Move Hands Apart)";
@@ -231,15 +253,22 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                     }
             }
 
-            if (this.last_gesture_1 != null)
+            if (this.last_gesture_1 != null && this.last_gesture_2 != null)
             {
-                if(((temp_gesture != this.last_gesture_1)) &&
+                if((temp_gesture != this.last_gesture_1) &&
                    this.PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Gesture"));
                 }
 
-                this.last_gesture_1 = temp_gesture;
+                if(p_args.TrackingId == this.skeleton_data[0].TrackingId)
+                {
+                    this.last_gesture_1 = temp_gesture;
+                }
+                else if(p_args.TrackingId == this.skeleton_data[1].TrackingId)
+                {
+                    this.last_gesture_2 = temp_gesture;
+                }
             }
 
             this.clear_timer.Start();

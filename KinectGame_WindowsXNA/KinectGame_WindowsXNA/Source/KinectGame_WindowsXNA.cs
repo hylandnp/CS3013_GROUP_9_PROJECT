@@ -125,7 +125,7 @@ namespace KinectGame_WindowsXNA
             player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
                                          JointType.HandRight,
                                          0.3f,
-                                         0);
+                                         1);
         }
      
 
