@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Fizbin.Kinect.Gestures;
 using Fizbin.Kinect.Gestures.Segments;
+using System.Timers;
+using System.ComponentModel;
 
 /*CHANGELOG
  * NEIL - Created the class.
@@ -16,7 +18,7 @@ using Fizbin.Kinect.Gestures.Segments;
 namespace KinectGame_WindowsXNA.Source.KinectUtils
 {
     // Utility class to manage the skeleton stream (modified from Microsoft examples)...
-    public class SkeletonStreamManager
+    public class SkeletonStreamManager : INotifyPropertyChanged
     {
         /*/////////////////////////////////////////
           * MEMBER DATA
@@ -33,6 +35,9 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
 
         // Fizbin Gesture controller:
         public GestureController fizbin_controller { get; private set; }
+        public string[] last_gesture { get; private set; }
+
+        private Timer clear_timer;
 
 
 
@@ -69,11 +74,14 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             if (p_kinect.kinect_sensor != null)
             {
                 // Start the Fizbin controller:
+                p_kinect.kinect_sensor.SkeletonFrameReady += this.updateSkeleton;
+
                 this.fizbin_controller = new GestureController();
+                this.fizbin_controller.GestureRecognized += this.gestureRecognition;
                 this.registerGestures();
 
-                p_kinect.kinect_sensor.SkeletonFrameReady += this.updateSkeleton;
-                fizbin_controller.GestureRecognized += this.gestureRecognition;
+                this.clear_timer = new Timer(2000); // used to clear last gesture
+                this.clear_timer.Elapsed += this.clearGestures;
             }
         }
 
@@ -94,6 +102,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                         this.skeleton_data.Length != current_frame.SkeletonArrayLength)
                     {
                         this.skeleton_data = new Skeleton[current_frame.SkeletonArrayLength];
+                        this.last_gesture = new string[current_frame.SkeletonArrayLength]; // tracking skeletons
                     }
 
                     current_frame.CopySkeletonDataTo(this.skeleton_data);
@@ -164,41 +173,75 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         /*/////////////////////////////////////////
           * GESTURE RECOGNITION FUNCTION(S)
           *////////////////////////////////////////
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private void gestureRecognition(object p_sender, GestureEventArgs p_args)
         {
             // Handle recognised gesture arguments:
+            string temp_gesture = "";
+
             switch (p_args.GestureName)
             {
-                //case "Menu":
-                //    {
-                //        Gesture = "Menu";
-                //        break;
-                //    }
-                //case "WaveRight":
-                //    Gesture = "Wave Right";
-                //    break;
-                //case "WaveLeft":
-                //    Gesture = "Wave Left";
-                //    break;
-                //case "JoinedHands":
-                //    Gesture = "Joined Hands";
-                //    break;
-                //case "SwipeLeft":
-                //    Gesture = "Swipe Left";
-                //    break;
-                //case "SwipeRight":
-                //    Gesture = "Swipe Right";
-                //    break;
-                //case "ZoomIn":
-                //    Gesture = "Zoom In";
-                //    break;
-                //case "ZoomOut":
-                //    Gesture = "Zoom Out";
-                //    break;
-
+                case "Menu":
+                    {
+                        temp_gesture = "Menu Gesture";
+                        break;
+                    }
+                case "WaveRight":
+                    {
+                        temp_gesture = "Wave Right Hand";
+                        break;
+                    }
+                case "WaveLeft":
+                    {
+                        temp_gesture = "Wave Left Hand";
+                        break;
+                    }
+                case "JoinedHands":
+                    {
+                        temp_gesture = "Joined Hands";
+                        break;
+                    }
+                case "SwipeLeft":
+                    {
+                        temp_gesture = "Swipe Right Hand (To The Left)";
+                        break;
+                    }
+                case "SwipeRight":
+                    {
+                        temp_gesture = "Swipe Left Hand (To The Right)";
+                        break;
+                    }
+                case "ZoomIn":
+                    {
+                        temp_gesture = "Zoom In (Move Hands Apart)";
+                        break;
+                    }
+                case "ZoomOut":
+                    {
+                        temp_gesture = "Zoom Out (Move Hands Together)";
+                        break;
+                    }
                 default:
-                    break;
+                    {
+                        temp_gesture = "";
+                        break;
+                    }
             }
+
+            if (this.last_gesture != null)
+            {
+                if(temp_gesture != this.last_gesture[p_args.TrackingId] &&
+                   this.PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Gesture"));
+                }
+
+                this.last_gesture[p_args.TrackingId] = temp_gesture;
+                Console.WriteLine(p_args.TrackingId + ": " + temp_gesture);
+            }
+
+            this.clear_timer.Start();
         }
 
 
@@ -291,6 +334,17 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             swipe_down_segments[1] = new SwipeDownSegment2();
             swipe_down_segments[2] = new SwipeDownSegment3();
             this.fizbin_controller.AddGesture("SwipeDown", swipe_down_segments);
+        }
+
+
+        private void clearGestures(object p_sender, ElapsedEventArgs p_args)
+        {
+            for (byte i = 0; i < this.last_gesture.Length; i++)
+            {
+                Console.WriteLine(this.last_gesture[i]);
+                this.last_gesture[i] = "";
+            }
+            this.clear_timer.Stop();
         }
 
 

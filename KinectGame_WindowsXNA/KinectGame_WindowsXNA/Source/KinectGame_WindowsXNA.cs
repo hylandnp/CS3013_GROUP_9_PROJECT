@@ -160,6 +160,7 @@ namespace KinectGame_WindowsXNA
                 temp_pos.Y = mouse_info.Y;
             }
 
+
             // Update the player cursors:
             if(this.player_1_cursor != null)
             {
@@ -187,6 +188,7 @@ namespace KinectGame_WindowsXNA
                                             time_span);
             }
             
+
             // LOADING/UPDATING STATE(S):
             switch(this.current_game_state)
             {
@@ -284,6 +286,7 @@ namespace KinectGame_WindowsXNA
                this.kinect_manager != null)
             {
                 this.kinect_manager.drawStatusMessage(this.sprite_batch);
+                this.kinect_manager.drawSkeletonGesture(this.sprite_batch);
             }
 
             // Draw player hand cursors:

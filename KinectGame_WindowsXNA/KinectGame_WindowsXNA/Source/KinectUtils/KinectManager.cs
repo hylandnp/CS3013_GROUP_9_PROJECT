@@ -274,6 +274,28 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         }
 
 
+        public void drawSkeletonGesture(SpriteBatch p_sprite_batch)
+        {
+            // Render the current recognised gesture from the Fizbin/skeleton stream manager:
+            if(this.skeleton_stream.fizbin_controller != null &&
+               this.skeleton_stream.last_gesture != null)
+            {
+                p_sprite_batch.Begin();
+
+                if(this.skeleton_stream.last_gesture != null &&
+                   this.skeleton_stream.last_gesture[0] != null)
+                {
+                    p_sprite_batch.DrawString(this.msg_font,
+                                          this.skeleton_stream.last_gesture[0],
+                                          new Vector2(10, 400),
+                                          Color.Wheat);
+                }
+
+                p_sprite_batch.End();
+            }
+        }
+
+
 
         /*/////////////////////////////////////////
           * INTERNAL SUPPORT FUNCTION(S)
@@ -294,7 +316,6 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             this.last_status = p_args.Status;
             this.discoverSensor();
         }
-
 
 
         private void discoverSensor()
