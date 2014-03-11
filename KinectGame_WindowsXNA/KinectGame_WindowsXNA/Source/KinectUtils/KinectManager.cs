@@ -184,33 +184,33 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         }
 
 
-        public Vector3 getMappedJointPosition2(JointType p_joint,
-                                              byte p_skeleton_id)
-        {
-            if (p_skeleton_id >= 0 &&
-                this.skeleton_stream != null &&
-                this.skeleton_stream.getSkeletonArray() != null &&
-                p_skeleton_id < this.skeleton_stream.getSkeletonArray().Length &&
-                this.skeleton_stream.getSkeleton(p_skeleton_id) != null)
-            {
-                Vector3 temp_pos = Vector3.Zero;
+        //public Vector3 getMappedJointPosition2(JointType p_joint,
+        //                                      byte p_skeleton_id)
+        //{
+        //    if (p_skeleton_id >= 0 &&
+        //        this.skeleton_stream != null &&
+        //        this.skeleton_stream.getSkeletonArray() != null &&
+        //        p_skeleton_id < this.skeleton_stream.getSkeletonArray().Length &&
+        //        this.skeleton_stream.getSkeleton(p_skeleton_id) != null)
+        //    {
+        //        Vector3 temp_pos = Vector3.Zero;
 
-                var width = this.root_game.GraphicsDevice.Viewport.Width;
-                var height = this.root_game.GraphicsDevice.Viewport.Height;
-                var skeleton = this.skeleton_stream.getSkeleton(p_skeleton_id);
+        //        var width = this.root_game.GraphicsDevice.Viewport.Width;
+        //        var height = this.root_game.GraphicsDevice.Viewport.Height;
+        //        var skeleton = this.skeleton_stream.getSkeleton(p_skeleton_id);
 
-                // Scale/offset/adjust to screen size:
-                temp_pos.X = scalePoint(this.root_game.GraphicsDevice.Viewport.Width, 1.0f, skeleton.Joints[p_joint].Position.X);
-                temp_pos.Y = scalePoint(this.root_game.GraphicsDevice.Viewport.Height, 1.0f, -skeleton.Joints[p_joint].Position.Y);
-                temp_pos.Z = skeleton.Joints[p_joint].Position.Z; // get basic skeleton Z-co-ordinate
+        //        // Scale/offset/adjust to screen size:
+        //        temp_pos.X = scalePoint(this.root_game.GraphicsDevice.Viewport.Width, 1.0f, skeleton.Joints[p_joint].Position.X);
+        //        temp_pos.Y = scalePoint(this.root_game.GraphicsDevice.Viewport.Height, 1.0f, -skeleton.Joints[p_joint].Position.Y);
+        //        temp_pos.Z = skeleton.Joints[p_joint].Position.Z; // get basic skeleton Z-co-ordinate
 
-                return temp_pos;
-            }
-            else
-            {
-                return Vector3.Zero; // co-ordinate (0, 0) if not properly tracked
-            }
-        }
+        //        return temp_pos;
+        //    }
+        //    else
+        //    {
+        //        return Vector3.Zero; // co-ordinate (0, 0) if not properly tracked
+        //    }
+        //}
 
 
         private float scalePoint(int p_max_pixels,
@@ -318,9 +318,11 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                 string temp = "";
 
                 // Get all currently tracked skeletons:
+                int index = 0;
                 foreach (var id in this.skeleton_stream.player_refs)
                 {
-                    temp += "TrackingID: " + Convert.ToString(id) + " - " + this.skeleton_stream.skeleton_players[id].last_gesture + "\n";
+                    temp += "Player: " + Convert.ToString(index + 1) + ", TrackingID: " + Convert.ToString(id) + " - " + this.skeleton_stream.skeleton_players[id].last_gesture + "\n";
+                    index++;
                 }
 
                 p_sprite_batch.Begin();
