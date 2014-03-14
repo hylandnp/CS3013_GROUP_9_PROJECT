@@ -125,8 +125,8 @@
     <Compile Include="Source\FizbinGestureLib\Segments\WaveLeftSegments.cs" />
     <Compile Include="Source\FizbinGestureLib\Segments\WaveRightSegments.cs" />
     <Compile Include="Source\FizbinGestureLib\Segments\ZoomSegments.cs" />
-    <Compile Include="Source\Game\GamePuzzle.cs" />
-    <Compile Include="Source\Game\ImageLoader.cs" />
+    <Compile Include="Source\Game\PuzzleGame.cs" />
+    <Compile Include="Source\Game\PaintingGame.cs" />
     <Compile Include="Source\Game\PaintSection.cs" />
     <Compile Include="Source\Game\PuzzlePiece.cs" />
     <Compile Include="Source\FizbinGestureLib\Gesture.cs" />

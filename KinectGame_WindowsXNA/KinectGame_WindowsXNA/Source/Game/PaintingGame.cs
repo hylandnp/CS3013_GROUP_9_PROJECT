@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-/*CHANGELOG
+/*CHANGELOG:
  * NEIL - Created the class.
  */
 
 namespace KinectGame_WindowsXNA.Source.Game
 {
-    // Main puzzle game class...
-    public class GamePuzzle
+    // Game class to run the picture-painting game...
+    public class PaintingGame
     {
         // TODO
     }

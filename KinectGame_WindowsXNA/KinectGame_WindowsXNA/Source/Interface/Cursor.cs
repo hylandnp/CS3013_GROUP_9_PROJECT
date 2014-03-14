@@ -51,7 +51,7 @@ namespace KinectGame_WindowsXNA.Source.Interface
             this.player_id = p_player;
 
             // Set drawing origin to the centre of the texture:
-            this.hand_origin = new Vector2((float)Math.Ceiling(this.hand_texture.Bounds.Width / 2.0f),
+            this.hand_origin = new Vector2((float)Math.Ceiling((this.hand_texture.Bounds.Width / 2.0f) - (256 / 2.0)),
                                            (float)Math.Ceiling(this.hand_texture.Bounds.Height / 2.0f));
 
             this.hand_dest_rect = new Rectangle(0, 0,

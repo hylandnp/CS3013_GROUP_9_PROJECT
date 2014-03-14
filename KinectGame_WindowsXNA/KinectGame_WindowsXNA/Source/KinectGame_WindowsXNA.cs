@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Kinect;
 using KinectGame_WindowsXNA.Source.KinectUtils;
 using KinectGame_WindowsXNA.Source.Interface;
+using KinectGame_WindowsXNA.Source.Game;
 
 /*CHANGELOG
  * NEIL - Created class & basic functionality.
@@ -54,6 +55,10 @@ namespace KinectGame_WindowsXNA
         public Cursor player_1_cursor { get; private set; }
         public Cursor player_2_cursor { get; private set; }
 
+        // Game stages:
+        private PaintingGame painting_game = null;
+        private PuzzleGame puzzle_game = null;
+
 
 
         /*/////////////////////////////////////////
@@ -65,7 +70,7 @@ namespace KinectGame_WindowsXNA
             this.graphics = new GraphicsDeviceManager(this);
 
             // Set game flags:
-            this.using_kinect_input = true; // set to false if you want to use the mouse to simulate Kinect input
+            this.using_kinect_input = false; // set to false if you want to use the mouse to simulate Kinect input
             this.status_debug_messages = true; // set to true if you want Kinect status messages displayed in the top-left corner
             this.display_video_streams = true; // set to true if you want the Kinect video/data streams to be rendered at the right-hand side of the screen (windowed mode only)
 
@@ -197,14 +202,20 @@ namespace KinectGame_WindowsXNA
                     }
                 case GameState.MENU:
                     {
+                        // Handle one/two-player button presses:
+                        // TODO
                         break;
                     }
                 case GameState.PUZZLE_PAINT:
                     {
+                        // Handle painting game:
+                        // TODO
                         break;
                     }
                 case GameState.PUZZLE_MAKE:
                     {
+                        // Handle puzzle game:
+                        // TODO
                         break;
                     }
                 default:
