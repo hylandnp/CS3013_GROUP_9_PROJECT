@@ -131,6 +131,10 @@ namespace KinectGame_WindowsXNA
                                          JointType.HandRight,
                                          0.3f,
                                          1);
+
+            // Create game sages:
+            painting_game = new PaintingGame();
+            puzzle_game = new PuzzleGame();
         }
      
 
@@ -209,13 +213,19 @@ namespace KinectGame_WindowsXNA
                 case GameState.PUZZLE_PAINT:
                     {
                         // Handle painting game:
-                        // TODO
+                        if(painting_game != null)
+                        {
+                            painting_game.update(p_game_time);
+                        }
                         break;
                     }
                 case GameState.PUZZLE_MAKE:
                     {
                         // Handle puzzle game:
-                        // TODO
+                        if (puzzle_game != null)
+                        {
+                            puzzle_game.update(p_game_time);
+                        }
                         break;
                     }
                 default:
@@ -264,11 +274,19 @@ namespace KinectGame_WindowsXNA
                 case GameState.PUZZLE_PAINT:
                     {
                         // Draw the puzzle-painting game:
+                        if (painting_game != null)
+                        {
+                            painting_game.draw(p_game_time, this.sprite_batch);
+                        }
                         break;
                     }
                 case GameState.PUZZLE_MAKE:
                     {
                         // Draw the puzzle-piece assembly game:
+                        if (puzzle_game != null)
+                        {
+                            puzzle_game.draw(p_game_time, this.sprite_batch);
+                        }
                         break;
                     }
                 default:
