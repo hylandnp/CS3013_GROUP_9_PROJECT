@@ -26,26 +26,51 @@ namespace KinectGame_WindowsXNA.Source.Interface
         MouseState oldMouse;
         bool clicked;
         bool hover;
+        GameTime time;
+
 
         public Button(Texture2D texture, SpriteFont font)
         {
             image = texture;
             this.font = font;
             location = new Rectangle(100, 100, image.Width, image.Height);
+            time = null;
         }
 
-        public void Update(Cursor player_one_cursor)
+        public void Update(Cursor player_one_cursor, GameTime time)
         {
             mouse = Mouse.GetState();
+            clicked = false;
 
            // if (mouse.LeftButton == ButtonState.Released && oldMouse.LeftButton == ButtonState.Pressed)
            // {
-                if (location.Contains(new Point(mouse.X, mouse.Y)))
+            if (location.Contains(new Point(mouse.X, mouse.Y)))
+            {
+                hover = true;
+                this.time = time;
+            }
+            else
+            {
+                hover = false;
+            }
+
+            if(hover && time != null)
+            {
+                int prev_time = this.time.ElapsedGameTime.Seconds;
+                int new_time = time.ElapsedGameTime.Seconds;
+
+                if(new_time - prev_time > 1)
                 {
-                    hover = true;
+                    clicked = true;
                 }
-         //   }
-            hover = false;
+            }
+        }
+
+        public bool isClicked()
+        {
+            bool is_clicked = clicked;
+            clicked = false;
+            return is_clicked;
         }
 
 
@@ -73,33 +98,15 @@ namespace KinectGame_WindowsXNA.Source.Interface
         public void Draw(SpriteBatch p_spriteBatch)
         {
             p_spriteBatch.Begin();
-            if(hover == true)
-            {
-                if (location.Contains(new Point(mouse.X, mouse.Y)))
-                {
-                    p_spriteBatch.Draw(image, location, Color.Red);
-                }
-                else
-                {
-                    p_spriteBatch.Draw(image, location, Color.Blue);
-                }
+            if(hover)
+            { 
+                    p_spriteBatch.Draw(image, location, Color.Green);
             }
             else
             {
-                if (location.Contains(new Point(mouse.X, mouse.Y)))
-                {
-                    p_spriteBatch.Draw(image, location, Color.Green);
-                }
-                else
-                {
                     p_spriteBatch.Draw(image, location, Color.White);
-                }
             }
-
-            //p_spriteBatch.DrawString(font, text, textLocation, Color.LawnGreen);
             p_spriteBatch.End();
-
-
         }
 
     }
