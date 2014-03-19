@@ -10,6 +10,7 @@ using System.Text;
  * NEIL - Created the class & added texture loading.
  * PATRICK - Added cursor tracking, simple rendering & gesture recognition.
  * NEIL - Minor formatting & bug fixes.
+ * NEIL - Added selected colour icon.
  */
 
 namespace KinectGame_WindowsXNA.Source.Interface
@@ -29,11 +30,14 @@ namespace KinectGame_WindowsXNA.Source.Interface
         private JointType hand_joint;
 
         // Rendering info:
-        private Texture2D hand_texture;
+        private Texture2D hand_texture,
+                          colour_texture;
         private Rectangle hand_dest_rect,
-                          hand_source_rect;
+                          hand_source_rect,
+                          colour_rect;
         private Vector2 hand_origin;
 
+        public Color selected_colour { get; set; }
 
 
         /*/////////////////////////////////////////
@@ -41,14 +45,17 @@ namespace KinectGame_WindowsXNA.Source.Interface
           */
         ///////////////////////////////////////
         public Cursor(Texture2D p_texture,
+                      Texture2D p_col_texture,
                       JointType p_hand,
                       float p_scale,
                       byte p_player)
         {
             // Initialisation...
             this.hand_texture = p_texture;
+            this.colour_texture = p_col_texture;
             this.hand_joint = p_hand;
             this.player_id = p_player;
+            this.selected_colour = Color.White;
 
             // Set drawing origin to the centre of the texture:
             this.hand_origin = new Vector2((float)Math.Ceiling((this.hand_texture.Bounds.Width / 2.0f) - (256 / 2.0)),
@@ -57,6 +64,12 @@ namespace KinectGame_WindowsXNA.Source.Interface
             this.hand_dest_rect = new Rectangle(0, 0,
                                                 (int)Math.Ceiling((this.hand_texture.Bounds.Width - 256) * p_scale),
                                                 (int)Math.Ceiling(this.hand_texture.Bounds.Height * p_scale));
+
+            // Position the colour icon over the hand texture:
+            this.colour_rect = new Rectangle(this.hand_dest_rect.X - 20,
+                                             this.hand_dest_rect.Y + 25,
+                                             (int)Math.Ceiling(this.colour_texture.Bounds.Width * p_scale),
+                                             (int)Math.Ceiling(this.colour_texture.Bounds.Height * p_scale));
 
             // Reset hands & texture source rectangle:
             this.swapHands();
@@ -80,6 +93,8 @@ namespace KinectGame_WindowsXNA.Source.Interface
 
             this.hand_dest_rect.X = (int)this.current_pos.X;
             this.hand_dest_rect.Y = (int)this.current_pos.Y;
+            this.colour_rect.X = this.hand_dest_rect.X - 20;
+            this.colour_rect.Y = this.hand_dest_rect.Y + 25;
         }
 
 
@@ -127,6 +142,7 @@ namespace KinectGame_WindowsXNA.Source.Interface
             {
                 p_sprite_batch.Begin();
                 p_sprite_batch.Draw(this.hand_texture, this.hand_dest_rect, this.hand_source_rect, Color.White, 0.0f, this.hand_origin, SpriteEffects.None, 0.0f);
+                p_sprite_batch.Draw(this.colour_texture, this.colour_rect, this.selected_colour);
                 p_sprite_batch.End();
             }
         }

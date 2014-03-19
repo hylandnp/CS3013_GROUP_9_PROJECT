@@ -55,14 +55,11 @@ namespace KinectGame_WindowsXNA
         public Cursor player_1_cursor { get; private set; }
         public Cursor player_2_cursor { get; private set; }
 
-//<<<<<<< HEAD
         private Button test_button;
-//=======
+
         // Game stages:
         private PaintingGame painting_game = null;
         private PuzzleGame puzzle_game = null;
-
-//>>>>>>> 5b444ae41019611ae9f930e66336d3f2ba5f30d4
 
 
         /*/////////////////////////////////////////
@@ -128,10 +125,12 @@ namespace KinectGame_WindowsXNA
 
             // Create player cursors:
             player_1_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
+                                         this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
                                          JointType.HandLeft,
                                          0.3f,
                                          0);
             player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
+                                         this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
                                          JointType.HandRight,
                                          0.3f,
                                          1);
