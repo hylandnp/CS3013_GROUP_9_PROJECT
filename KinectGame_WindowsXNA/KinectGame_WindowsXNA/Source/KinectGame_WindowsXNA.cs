@@ -55,10 +55,14 @@ namespace KinectGame_WindowsXNA
         public Cursor player_1_cursor { get; private set; }
         public Cursor player_2_cursor { get; private set; }
 
+//<<<<<<< HEAD
+        private Button test_button;
+//=======
         // Game stages:
         private PaintingGame painting_game = null;
         private PuzzleGame puzzle_game = null;
 
+//>>>>>>> 5b444ae41019611ae9f930e66336d3f2ba5f30d4
 
 
         /*/////////////////////////////////////////
@@ -132,9 +136,14 @@ namespace KinectGame_WindowsXNA
                                          0.3f,
                                          1);
 
+//<<<<<<< HEAD
+            this.test_button = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
+                                          this.Content.Load<SpriteFont>("Fonts/Segoe16"));
+//=======
             // Create game sages:
             painting_game = new PaintingGame();
             puzzle_game = new PuzzleGame();
+//>>>>>>> 5b444ae41019611ae9f930e66336d3f2ba5f30d4
         }
      
 
@@ -208,6 +217,7 @@ namespace KinectGame_WindowsXNA
                     {
                         // Handle one/two-player button presses:
                         // TODO
+                        this.test_button.Update(player_1_cursor);
                         break;
                     }
                 case GameState.PUZZLE_PAINT:
@@ -269,6 +279,7 @@ namespace KinectGame_WindowsXNA
                 case GameState.MENU:
                     {
                         // Draw the simple main menu:
+                        this.test_button.Draw(this.sprite_batch);
                         break;
                     }
                 case GameState.PUZZLE_PAINT:
