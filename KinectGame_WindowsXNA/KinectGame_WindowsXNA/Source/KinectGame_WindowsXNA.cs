@@ -126,11 +126,13 @@ namespace KinectGame_WindowsXNA
             // Create player cursors:
             player_1_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
                                          this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
+                                         this.Content.Load<SpriteFont>("Fonts/Segoe16"),
                                          JointType.HandLeft,
                                          0.3f,
                                          0);
             player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
                                          this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
+                                         this.Content.Load<SpriteFont>("Fonts/Segoe16"),
                                          JointType.HandRight,
                                          0.3f,
                                          1);
