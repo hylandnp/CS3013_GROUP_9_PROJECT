@@ -16,7 +16,6 @@ namespace KinectGame_WindowsXNA.Source.Interface
     // Simple button for the Kinect game...
     public class Button
     {
-        // TODO
         Texture2D image;
         SpriteFont font;
         Rectangle location;
@@ -27,7 +26,6 @@ namespace KinectGame_WindowsXNA.Source.Interface
         bool clicked;
         bool hover;
         GameTime time;
-
 
         public Button(Texture2D texture, SpriteFont font)
         {
