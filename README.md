@@ -72,3 +72,16 @@ Neil (11/03/2014)
 - Added the Fizbin Gesture Library for recognising gestures (replacing attempted home-brew code).
 
 - Incorporated Fizbin Gesture Library tracking.
+
+
+Gavan (17-21/03/2014)
+
+- Basic button functionality.
+
+- Started button timing code.
+
+
+Patrick (19-23/03/2014)
+
+- Started colour-swapping & picture-painting game.
+
