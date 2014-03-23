@@ -8,7 +8,8 @@ using Microsoft.Xna.Framework.Input;
 
 
 /*CHANGELOG
- * NEIL - Created the class.
+ * NEIL - Created the empty class.
+ * GAVAN - Button functionality added.
  */
 
 namespace KinectGame_WindowsXNA.Source.Interface

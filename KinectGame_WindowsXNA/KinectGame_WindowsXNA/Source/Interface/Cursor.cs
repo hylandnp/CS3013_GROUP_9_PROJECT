@@ -20,8 +20,7 @@ namespace KinectGame_WindowsXNA.Source.Interface
     {
         /*/////////////////////////////////////////
           * MEMBER DATA
-          */
-        ///////////////////////////////////////
+          *////////////////////////////////////////
         public byte player_id { get; set; }
 
         private Vector3 current_pos,
@@ -43,10 +42,10 @@ namespace KinectGame_WindowsXNA.Source.Interface
         public string debug_message { get; set; }
 
 
+
         /*/////////////////////////////////////////
           * CONSTRUCTOR(S)/DESTRUCTOR(S)
-          */
-        ///////////////////////////////////////
+          *////////////////////////////////////////
         public Cursor(Texture2D p_texture,
                       Texture2D p_col_texture,
                       SpriteFont p_debug_font,

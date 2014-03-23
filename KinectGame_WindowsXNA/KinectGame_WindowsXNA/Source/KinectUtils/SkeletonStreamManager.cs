@@ -124,7 +124,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                 SkeletonPlayer new_player = new SkeletonPlayer();
 
                                 new_player.tracking_id = skeleton.TrackingId;
-                                new_player.last_gesture = "";
+                                new_player.last_gesture_str = "";
                                 new_player.skeleton = skeleton;
 
                                 this.skeleton_players.Add(new_player.tracking_id, new_player);
@@ -220,63 +220,74 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         private void gestureRecognition(object p_sender, GestureEventArgs p_args)
         {
             // Handle recognised gesture arguments:
-            string temp_gesture = "";
+            string temp_gesture_str = "";
+            GestureType temp_gesture = GestureType.NONE;
 
             switch (p_args.GestureName)
             {
                 case "Menu":
                     {
-                        temp_gesture = "Menu Gesture";
+                        temp_gesture_str = "Menu Gesture";
+                        temp_gesture = GestureType.MENU;
                         break;
                     }
                 case "WaveRight":
                     {
-                        temp_gesture = "Wave Right Hand";
+                        temp_gesture_str = "Wave Right Hand";
+                        temp_gesture = GestureType.WAVE_RIGHT_HAND;
                         break;
                     }
                 case "WaveLeft":
                     {
-                        temp_gesture = "Wave Left Hand";
+                        temp_gesture_str = "Wave Left Hand";
+                        temp_gesture = GestureType.WAVE_LEFT_HAND;
                         break;
                     }
                 case "JoinedHands":
                     {
-                        temp_gesture = "Joined Hands";
+                        temp_gesture_str = "Joined Hands";
+                        temp_gesture = GestureType.JOINED_HANDS;
                         break;
                     }
                 case "SwipeLeft":
                     {
-                        temp_gesture = "Swipe Right Hand (To The Left)";
+                        temp_gesture_str = "Swipe Right Hand (To The Left)";
+                        temp_gesture = GestureType.SWIPE_RIGHT_TO_LEFT;
                         break;
                     }
                 case "SwipeRight":
                     {
-                        temp_gesture = "Swipe Left Hand (To The Right)";
+                        temp_gesture_str = "Swipe Left Hand (To The Right)";
+                        temp_gesture = GestureType.SWIPE_LEFT_TO_RIGHT;
                         break;
                     }
                 case "SwipeUp":
                     {
-                        temp_gesture = "Swipe Up";
+                        temp_gesture_str = "Swipe Up";
+                        temp_gesture = GestureType.SWIPE_UP;
                         break;
                     }
                 case "SwipeDown":
                     {
-                        temp_gesture = "Swipe Down";
+                        temp_gesture_str = "Swipe Down";
+                        temp_gesture = GestureType.SWIPE_DOWN;
                         break;
                     }
                 case "ZoomIn":
                     {
-                        temp_gesture = "Zoom In (Move Hands Apart)";
+                        temp_gesture_str = "Zoom In (Move Hands Apart)";
+                        temp_gesture = GestureType.ZOOM_IN;
                         break;
                     }
                 case "ZoomOut":
                     {
-                        temp_gesture = "Zoom Out (Move Hands Together)";
+                        temp_gesture_str = "Zoom Out (Move Hands Together)";
+                        temp_gesture = GestureType.ZOOM_OUT;
                         break;
                     }
                 default:
                     {
-                        temp_gesture = "";
+                        temp_gesture_str = "";
                         break;
                     }
             }
@@ -286,12 +297,13 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             {
                 //var current_skeleton = this.skeleton_players[p_args.TrackingId];
 
-                if(this.skeleton_players[p_args.TrackingId].last_gesture != temp_gesture &&
+                if(this.skeleton_players[p_args.TrackingId].last_gesture_str != temp_gesture_str &&
                    this.PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Gesture"));
                 }
 
+                this.skeleton_players[p_args.TrackingId].last_gesture_str = temp_gesture_str;
                 this.skeleton_players[p_args.TrackingId].last_gesture = temp_gesture;
             }
 
@@ -395,7 +407,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         {
             foreach (var id in this.player_refs)
             {
-                this.skeleton_players[id].last_gesture = "";
+                this.skeleton_players[id].last_gesture_str = "";
+                this.skeleton_players[id].last_gesture = GestureType.NONE;
             }
 
             this.clear_timer.Stop();

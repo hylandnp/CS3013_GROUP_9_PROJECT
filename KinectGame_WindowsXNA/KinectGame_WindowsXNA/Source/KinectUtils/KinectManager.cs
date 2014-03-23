@@ -321,7 +321,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                 int index = 0;
                 foreach (var id in this.skeleton_stream.player_refs)
                 {
-                    temp += "Player: " + Convert.ToString(index + 1) + ", TrackingID: " + Convert.ToString(id) + " - " + this.skeleton_stream.skeleton_players[id].last_gesture + "\n";
+                    temp += "Player: " + Convert.ToString(index + 1) + ", TrackingID: " + Convert.ToString(id) + " - " + this.skeleton_stream.skeleton_players[id].last_gesture_str + "\n";
                     index++;
                 }
 
