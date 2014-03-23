@@ -58,7 +58,7 @@ namespace KinectGame_WindowsXNA.Source.Interface
             this.colour_texture = p_col_texture;
             this.hand_joint = p_hand;
             this.player_id = p_player;
-            this.selected_colour = Color.White;
+            this.selected_colour = Color.Wheat;
             this.debug_font = p_debug_font;
             this.debug_message = "";
 
@@ -136,11 +136,18 @@ namespace KinectGame_WindowsXNA.Source.Interface
             {
                 this.hand_joint = JointType.HandLeft;
 
-                // Set right-hand of texture drawable:
+                // Set left-hand of texture drawable:
                 this.hand_source_rect = new Rectangle(0, 0,
                                                       this.hand_texture.Bounds.Width - 265,
                                                       this.hand_texture.Bounds.Height);
             }
+        }
+
+
+        public Vector2 get2DPosition()
+        {
+            return new Vector2(this.current_pos.X,
+                               this.current_pos.Y);
         }
 
 

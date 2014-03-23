@@ -20,6 +20,8 @@ using KinectGame_WindowsXNA.Source.Game;
  * NEIL - Slight modifications & added Kinect status debug messages that can be displayed on screen.
  * NEIL - Moved the colour stream manager to the Kinect manager class.
  * PATRICK - Added debug mouse tracking functionality & cursor updates/rendering.
+ * GAVAN - Added buttons.
+ * NEIL/PATRICK - Implemented basic painting/colouring game.
  */
 
 namespace KinectGame_WindowsXNA
@@ -100,6 +102,10 @@ namespace KinectGame_WindowsXNA
             this.Window.Title = "Kinect Puzzle Game";
             this.Window.AllowUserResizing = false;
 
+            // Create the minigame classes:
+            this.painting_game = new PaintingGame();
+            this.puzzle_game = new PuzzleGame();
+
             base.Initialize();
         }
 
@@ -124,24 +130,28 @@ namespace KinectGame_WindowsXNA
                                                     this);
 
             // Create player cursors:
-            player_1_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
-                                         this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
-                                         this.Content.Load<SpriteFont>("Fonts/Segoe16"),
-                                         JointType.HandLeft,
-                                         0.3f,
-                                         0);
-            player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
-                                         this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
-                                         this.Content.Load<SpriteFont>("Fonts/Segoe16"),
-                                         JointType.HandRight,
-                                         0.3f,
-                                         1);
+            this.player_1_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
+                                              this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
+                                              this.Content.Load<SpriteFont>("Fonts/Segoe16"),
+                                              JointType.HandLeft,
+                                              0.3f,
+                                              0);
+            this.player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
+                                              this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
+                                              this.Content.Load<SpriteFont>("Fonts/Segoe16"),
+                                              JointType.HandRight,
+                                              0.3f,
+                                              1);
 
             this.test_button = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
                                           this.Content.Load<SpriteFont>("Fonts/Segoe16"));
-            // Create game sages:
-            painting_game = new PaintingGame();
-            puzzle_game = new PuzzleGame();
+            // Load minigames:
+            this.painting_game.load(this.Content,
+                                    this.GraphicsDevice);
+
+            // DEBUG: test colours
+            this.player_1_cursor.selected_colour = Color.Red;
+            this.player_2_cursor.selected_colour = Color.Red;
         }
      
 
@@ -217,11 +227,11 @@ namespace KinectGame_WindowsXNA
                         // TODO
                         this.test_button.Update(player_1_cursor, p_game_time);
 
-                        if(this.test_button.isClicked())
-                        {
-                            // DO SOMETHING WITH BUTTON
-                            Console.WriteLine("hello");
-                        }
+                        //if(this.test_button.isClicked())
+                        //{
+                        //     DO SOMETHING WITH BUTTON
+                        //    Console.WriteLine("hello");
+                        //}
                         break;
                     }
                 case GameState.PUZZLE_PAINT:
@@ -229,7 +239,9 @@ namespace KinectGame_WindowsXNA
                         // Handle painting game:
                         if(painting_game != null)
                         {
-                            painting_game.update(p_game_time);
+                            painting_game.update(p_game_time,
+                                                 this.player_1_cursor,
+                                                 this.player_2_cursor);
                         }
                         break;
                     }

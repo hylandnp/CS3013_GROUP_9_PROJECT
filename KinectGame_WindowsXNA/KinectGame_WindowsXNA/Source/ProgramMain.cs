@@ -1,10 +1,10 @@
 using System;
 
+
 /*CHANGELOG
  * NEIL - Created class.
  */
 
-//testpush
 namespace KinectGame_WindowsXNA
 {
 #if WINDOWS || XBOX

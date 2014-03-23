@@ -85,6 +85,12 @@ Patrick (19-23/03/2014)
 
 - Started colour-swapping & picture-painting game.
 
-Patrick (23/03/2014)
-- Added colouring in for white textures.
 
+Patrick (23/03/2014)
+
+- Added colouring-in for textures.
+
+
+Neil (23/03/2014)
+
+- Moved colouring-in to the PaintingGame class.

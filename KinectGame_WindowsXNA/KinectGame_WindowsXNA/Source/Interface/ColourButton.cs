@@ -11,6 +11,7 @@ using System.Text;
  * NEIL - Created the empty class.
  * GAVAN - Button functionality added.
  * PATRICK - Added a function to change the colour of a pixel at the mouse in a texture.
+ * NEIL - Moved colour change functionality to PaintingGame class.
  */
 
 namespace KinectGame_WindowsXNA.Source.Interface
@@ -89,22 +90,13 @@ namespace KinectGame_WindowsXNA.Source.Interface
             }
         }
 
+
         public void Location(int x, int y)
         {
             location.X = x;
             location.Y = y;
         }
 
-        // Uses location of the mouse to change the colour of the texture pixel at the mouse if it is not yet coloured
-        public void Recolour(int position, Color newColour)
-        {
-            Color[] data = new Color[image.Width * image.Height];
-            image.GetData(data);
-            if (data[location.X * location.Y] == Color.White)
-            {
-                data[location.X * location.Y] = newColour;
-            }
-        } 
 
         public void Draw(SpriteBatch p_spriteBatch)
         {
