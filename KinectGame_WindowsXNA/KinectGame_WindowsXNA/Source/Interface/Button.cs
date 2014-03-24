@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input; 
@@ -26,43 +27,54 @@ namespace KinectGame_WindowsXNA.Source.Interface
         MouseState oldMouse;
         bool clicked;
         bool hover;
+        bool started;
+        bool finished;
         GameTime time;
+        bool timeElapsed;
+        float MouseTime;
+        Timer timer;
 
-        public Button(Texture2D texture, SpriteFont font)
+
+        public Button(Texture2D texture, SpriteFont font, float startTime)
         {
             image = texture;
             this.font = font;
             location = new Rectangle(100, 100, image.Width, image.Height);
-            time = null;
+            MouseTime = startTime;
         }
 
-        public void Update(Cursor player_one_cursor, GameTime time)
+        public void Update(Cursor player_one_cursor, GameTime p_time)
         {
             mouse = Mouse.GetState();
             clicked = false;
 
-           // if (mouse.LeftButton == ButtonState.Released && oldMouse.LeftButton == ButtonState.Pressed)
-           // {
+            // if (mouse.LeftButton == ButtonState.Released && oldMouse.LeftButton == ButtonState.Pressed)
+            // {
             if (location.Contains(new Point(mouse.X, mouse.Y)))
             {
                 hover = true;
-                this.time = time;
+                this.time = p_time;
             }
             else
             {
                 hover = false;
             }
 
-            if(hover && time != null)
+            if (hover && p_time != null)
             {
-                int prev_time = this.time.ElapsedGameTime.Seconds;
-                int new_time = time.ElapsedGameTime.Seconds;
+                //               float prev_time = (float)this.time.ElapsedGameTime.Seconds;
+                float new_time = (float)p_time.ElapsedGameTime.Seconds;
 
-                if(new_time - prev_time > 1)
+                if (MouseTime > 0)
                 {
-                    clicked = true;
+                    MouseTime -= new_time;
+                }
+                else
+                {
+                    finished = true;
                 }
             }
+            finished = false;
         }
 
         public bool isClicked()
@@ -97,7 +109,7 @@ namespace KinectGame_WindowsXNA.Source.Interface
         public void Draw(SpriteBatch p_spriteBatch)
         {
             p_spriteBatch.Begin();
-            if(hover)
+            if(finished)
             { 
                     p_spriteBatch.Draw(image, location, Color.Green);
             }

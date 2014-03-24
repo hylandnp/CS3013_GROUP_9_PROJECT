@@ -144,7 +144,7 @@ namespace KinectGame_WindowsXNA
                                               1);
 
             this.test_button = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
-                                          this.Content.Load<SpriteFont>("Fonts/Segoe16"));
+                                          this.Content.Load<SpriteFont>("Fonts/Segoe16"), 2.0f);
             // Load minigames:
             this.painting_game.load(this.Content,
                                     this.GraphicsDevice);
