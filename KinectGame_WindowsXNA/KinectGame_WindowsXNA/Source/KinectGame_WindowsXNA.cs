@@ -61,6 +61,15 @@ namespace KinectGame_WindowsXNA
 
         private Button test_button2;
 
+        private ColourButton test_colour_button;
+
+        private ColourButton test_colour_button2;
+
+        private ColourButton test_colour_button3;
+
+
+
+
         // Game stages:
         private PaintingGame painting_game = null;
         private PuzzleGame puzzle_game = null;
@@ -149,7 +158,18 @@ namespace KinectGame_WindowsXNA
                                           2.0f, 100, 350);
 
             this.test_button2 = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
-                                          2.0f, 400, 350);
+                                          2.0f, 450, 350);
+
+            this.test_colour_button = new ColourButton(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
+                                          2.0f, 500, 100, Color.Red);
+
+            this.test_colour_button2 = new ColourButton(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
+                                          2.0f, 500, 250, Color.Blue );
+
+            this.test_colour_button3 = new ColourButton(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
+                                         2.0f, 500, 400, Color.Yellow);
+
+
             // Load minigames:
             this.painting_game.load(this.Content,
                                     this.GraphicsDevice);
@@ -248,6 +268,9 @@ namespace KinectGame_WindowsXNA
                 case GameState.PUZZLE_PAINT:
                     {
                         // Handle painting game:
+                        this.test_colour_button.Update(player_1_cursor, p_game_time);
+                        this.test_colour_button2.Update(player_1_cursor, p_game_time);
+                        this.test_colour_button3.Update(player_1_cursor, p_game_time);
                         if(painting_game != null)
                         {
                             painting_game.update(p_game_time,
@@ -313,9 +336,13 @@ namespace KinectGame_WindowsXNA
                 case GameState.PUZZLE_PAINT:
                     {
                         // Draw the puzzle-painting game:
+                        this.test_colour_button.Draw(this.sprite_batch);
+                        this.test_colour_button2.Draw(this.sprite_batch);
+                        this.test_colour_button3.Draw(this.sprite_batch);
                         if (painting_game != null)
                         {
                             painting_game.draw(p_game_time, this.sprite_batch);
+
                         }
                         break;
                     }

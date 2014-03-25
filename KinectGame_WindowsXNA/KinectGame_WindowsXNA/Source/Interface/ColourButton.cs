@@ -1,113 +1,109 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 
 /*CHANGELOG
  * NEIL - Created the empty class.
  * GAVAN - Button functionality added.
- * PATRICK - Added a function to change the colour of a pixel at the mouse in a texture.
- * NEIL - Moved colour change functionality to PaintingGame class.
  */
 
 namespace KinectGame_WindowsXNA.Source.Interface
 {
-    // Simple button used ingame to select a colour to paint with (also labelled with a potential answer to the sum)...
+    // Simple button for the Kinect game...
     public class ColourButton
     {
-        Texture2D image;
-        SpriteFont font;
-        Rectangle location;
-        string text;
-        Vector2 textLocation;
-        MouseState mouse;
-        MouseState oldMouse;
-        bool clicked;
-        bool hover;
-        GameTime time;
+        Texture2D c_image;
+        Rectangle c_location;
+        string c_text;
+        Vector2 c_textLocation;
+        MouseState c_mouse;
+        MouseState c_oldMouse;
+        bool c_clicked;
+        bool c_hover;
+        float c_target_time;
+        Stopwatch c_timer;
+        Color color;
 
-        public ColourButton(Texture2D texture, SpriteFont font)
+
+        public ColourButton(Texture2D texture, float startTime, int x, int y, Color p_color)
         {
-            image = texture;
-            this.font = font;
-            location = new Rectangle(100, 100, image.Width, image.Height);
-            time = null;
+            c_image = texture;
+            c_location = new Rectangle(x, y, c_image.Width, c_image.Height);
+            c_target_time = startTime * 1000;
+            c_hover = false;
+            c_timer = new Stopwatch();
+            color = p_color;
         }
 
-        public void Update(Cursor player_one_cursor, GameTime time)
+        public void Update(Cursor player_one_cursor, GameTime p_time)
         {
-            mouse = Mouse.GetState();
-            clicked = false;
+            c_mouse = Mouse.GetState();
+            c_clicked = false;
 
-           // if (mouse.LeftButton == ButtonState.Released && oldMouse.LeftButton == ButtonState.Pressed)
-           // {
-            if (location.Contains(new Point(mouse.X, mouse.Y)))
+            if (c_location.Contains(new Point(c_mouse.X, c_mouse.Y)))
             {
-                hover = true;
-                this.time = time;
+                if (!c_hover)
+                {
+                    c_hover = true;
+                    if (!c_timer.IsRunning) c_timer.Restart();
+                }
             }
             else
             {
-                hover = false;
+                c_hover = false;
+                c_clicked = false;
+                c_timer.Reset();
             }
 
-            if(hover && time != null)
+            if (c_hover && c_timer.IsRunning)
             {
-                int prev_time = this.time.ElapsedGameTime.Seconds;
-                int new_time = time.ElapsedGameTime.Seconds;
+                long current_time = c_timer.ElapsedMilliseconds;
 
-                if(new_time - prev_time > 1)
+                if (current_time >= c_target_time)
                 {
-                    clicked = true;
+                    Console.WriteLine(current_time.ToString());
+                    c_timer.Reset();
+                    c_clicked = true;
+                    player_one_cursor.debug_message = "";
+                }
+                else
+                {
+                    player_one_cursor.debug_message = current_time.ToString();
                 }
             }
         }
 
         public bool isClicked()
         {
-            bool is_clicked = clicked;
-            clicked = false;
+            bool is_clicked = c_clicked;
+            c_clicked = false;
             return is_clicked;
-        }
-
-
-        public String Text
-        {
-            get { return text; }
-
-            set
-            {
-                text = value;
-                Vector2 size = font.MeasureString(text);
-                textLocation = new Vector2();
-                textLocation.Y = location.Y + ((image.Height / 2) - (size.Y / 2));
-                textLocation.X = location.X + ((image.Width / 2) - (size.X / 2));
-
-            }
         }
 
 
         public void Location(int x, int y)
         {
-            location.X = x;
-            location.Y = y;
+            c_location.X = x;
+            c_location.Y = y;
         }
-
 
         public void Draw(SpriteBatch p_spriteBatch)
         {
             p_spriteBatch.Begin();
-            if(hover)
-            { 
-                    p_spriteBatch.Draw(image, location, Color.Green);
+            if (c_clicked)
+            {
+                p_spriteBatch.Draw(c_image, c_location, color);
             }
             else
             {
-                    p_spriteBatch.Draw(image, location, Color.White);
+                p_spriteBatch.Draw(c_image, c_location, color);
             }
             p_spriteBatch.End();
         }
