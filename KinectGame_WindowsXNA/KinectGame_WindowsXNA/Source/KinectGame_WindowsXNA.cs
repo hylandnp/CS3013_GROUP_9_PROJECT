@@ -277,6 +277,11 @@ namespace KinectGame_WindowsXNA
                                                  this.player_1_cursor,
                                                  this.player_2_cursor);
                         }
+                        if(this.test_colour_button.isClicked() || this.test_colour_button2.isClicked() ||
+                                this.test_colour_button3.isClicked())
+                        {
+          
+                        }
                         break;
                     }
                 case GameState.PUZZLE_MAKE:

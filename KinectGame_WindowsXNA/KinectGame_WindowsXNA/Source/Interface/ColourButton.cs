@@ -93,6 +93,11 @@ namespace KinectGame_WindowsXNA.Source.Interface
             c_location.X = x;
             c_location.Y = y;
         }
+        
+        public Color button_color()
+        {
+            return color;
+        }
 
         public void Draw(SpriteBatch p_spriteBatch)
         {
