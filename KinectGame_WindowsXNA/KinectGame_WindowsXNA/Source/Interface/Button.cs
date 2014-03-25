@@ -5,7 +5,8 @@ using System.Text;
 using System.Timers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input; 
+using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 
 /*CHANGELOG
@@ -19,7 +20,6 @@ namespace KinectGame_WindowsXNA.Source.Interface
     public class Button
     {
         Texture2D image;
-        SpriteFont font;
         Rectangle location;
         string text;
         Vector2 textLocation;
@@ -27,20 +27,17 @@ namespace KinectGame_WindowsXNA.Source.Interface
         MouseState oldMouse;
         bool clicked;
         bool hover;
-        bool started;
-        bool finished;
-        GameTime time;
-        bool timeElapsed;
-        float MouseTime;
-        Timer timer;
+        float target_time;
+        Stopwatch timer;
 
 
-        public Button(Texture2D texture, SpriteFont font, float startTime)
+        public Button(Texture2D texture, float startTime)
         {
             image = texture;
-            this.font = font;
-            location = new Rectangle(100, 100, image.Width, image.Height);
-            MouseTime = startTime;
+            location = new Rectangle(100, 350, image.Width, image.Height);
+            target_time = startTime  * 1000;
+            hover = false;
+            timer = new Stopwatch();
         }
 
         public void Update(Cursor player_one_cursor, GameTime p_time)
@@ -48,33 +45,37 @@ namespace KinectGame_WindowsXNA.Source.Interface
             mouse = Mouse.GetState();
             clicked = false;
 
-            // if (mouse.LeftButton == ButtonState.Released && oldMouse.LeftButton == ButtonState.Pressed)
-            // {
             if (location.Contains(new Point(mouse.X, mouse.Y)))
             {
-                hover = true;
-                this.time = p_time;
+                if (!hover)
+                {
+                    hover = true;
+                    if (!timer.IsRunning) timer.Restart();
+                }
             }
             else
             {
                 hover = false;
+                clicked = false;
+                timer.Reset();
             }
 
-            if (hover && p_time != null)
+            if (hover && timer.IsRunning)
             {
-                //               float prev_time = (float)this.time.ElapsedGameTime.Seconds;
-                float new_time = (float)p_time.ElapsedGameTime.Seconds;
+                long current_time = timer.ElapsedMilliseconds;
 
-                if (MouseTime > 0)
+                if (current_time >= target_time)
                 {
-                    MouseTime -= new_time;
+                    Console.WriteLine(current_time.ToString());
+                    timer.Reset();
+                    clicked = true;
+                    player_one_cursor.debug_message = "";
                 }
                 else
                 {
-                    finished = true;
+                    player_one_cursor.debug_message = current_time.ToString();
                 }
             }
-            finished = false;
         }
 
         public bool isClicked()
@@ -85,21 +86,6 @@ namespace KinectGame_WindowsXNA.Source.Interface
         }
 
 
-        public String Text
-        {
-            get { return text; }
-
-            set
-            {
-                text = value;
-                Vector2 size = font.MeasureString(text);
-                textLocation = new Vector2();
-                textLocation.Y = location.Y + ((image.Height / 2) - (size.Y / 2));
-                textLocation.X = location.X + ((image.Width / 2) - (size.X / 2));
-
-            }
-        }
-
         public void Location(int x, int y)
         {
             location.X = x;
@@ -109,7 +95,7 @@ namespace KinectGame_WindowsXNA.Source.Interface
         public void Draw(SpriteBatch p_spriteBatch)
         {
             p_spriteBatch.Begin();
-            if(finished)
+            if(clicked)
             { 
                     p_spriteBatch.Draw(image, location, Color.Green);
             }

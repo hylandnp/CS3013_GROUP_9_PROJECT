@@ -144,7 +144,7 @@ namespace KinectGame_WindowsXNA
                                               1);
 
             this.test_button = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
-                                          this.Content.Load<SpriteFont>("Fonts/Segoe16"), 2.0f);
+                                          2.0f);
             // Load minigames:
             this.painting_game.load(this.Content,
                                     this.GraphicsDevice);
@@ -227,6 +227,11 @@ namespace KinectGame_WindowsXNA
                         // TODO
                         this.test_button.Update(player_1_cursor, p_game_time);
 
+                        if(this.test_button.isClicked())
+                        {
+                            Console.WriteLine("hello autistic world!");
+                            this.current_game_state = GameState.PUZZLE_PAINT;
+                        }
                         //if(this.test_button.isClicked())
                         //{
                         //     DO SOMETHING WITH BUTTON
