@@ -233,7 +233,7 @@ namespace KinectGame_WindowsXNA
                         this.test_button.Update(player_1_cursor, p_game_time);
                         this.test_button2.Update(player_1_cursor, p_game_time);
 
-                        if(this.test_button.isClicked())
+                        if(this.test_button.isClicked() || this.test_button2.isClicked())
                         {
                             Console.WriteLine("hello autistic world!");
                             this.current_game_state = GameState.PUZZLE_PAINT;
