@@ -31,10 +31,10 @@ namespace KinectGame_WindowsXNA.Source.Interface
         Stopwatch timer;
 
 
-        public Button(Texture2D texture, float startTime)
+        public Button(Texture2D texture, float startTime, int x, int y)
         {
             image = texture;
-            location = new Rectangle(100, 350, image.Width, image.Height);
+            location = new Rectangle(x, y, image.Width, image.Height);
             target_time = startTime  * 1000;
             hover = false;
             timer = new Stopwatch();

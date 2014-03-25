@@ -59,6 +59,8 @@ namespace KinectGame_WindowsXNA
 
         private Button test_button;
 
+        private Button test_button2;
+
         // Game stages:
         private PaintingGame painting_game = null;
         private PuzzleGame puzzle_game = null;
@@ -144,7 +146,10 @@ namespace KinectGame_WindowsXNA
                                               1);
 
             this.test_button = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
-                                          2.0f);
+                                          2.0f, 100, 350);
+
+            this.test_button2 = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
+                                          2.0f, 400, 350);
             // Load minigames:
             this.painting_game.load(this.Content,
                                     this.GraphicsDevice);
@@ -226,6 +231,7 @@ namespace KinectGame_WindowsXNA
                         // Handle one/two-player button presses:
                         // TODO
                         this.test_button.Update(player_1_cursor, p_game_time);
+                        this.test_button2.Update(player_1_cursor, p_game_time);
 
                         if(this.test_button.isClicked())
                         {
@@ -301,6 +307,7 @@ namespace KinectGame_WindowsXNA
                     {
                         // Draw the simple main menu:
                         this.test_button.Draw(this.sprite_batch);
+                        this.test_button2.Draw(this.sprite_batch);
                         break;
                     }
                 case GameState.PUZZLE_PAINT:
