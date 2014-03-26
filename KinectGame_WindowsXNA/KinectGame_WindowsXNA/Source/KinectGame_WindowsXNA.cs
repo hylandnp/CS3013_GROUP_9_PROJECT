@@ -277,10 +277,17 @@ namespace KinectGame_WindowsXNA
                                                  this.player_1_cursor,
                                                  this.player_2_cursor);
                         }
-                        if(this.test_colour_button.isClicked() || this.test_colour_button2.isClicked() ||
-                                this.test_colour_button3.isClicked())
+                        if(this.test_colour_button.isClicked())
                         {
-          
+                             this.player_1_cursor.selected_colour = Color.Red;
+                        }
+                        if(this.test_colour_button2.isClicked())
+                        {
+                             this.player_1_cursor.selected_colour = Color.Blue;
+                        }
+                        if(this.test_colour_button3.isClicked())
+                        {
+                             this.player_1_cursor.selected_colour = Color.Yellow;
                         }
                         break;
                     }
