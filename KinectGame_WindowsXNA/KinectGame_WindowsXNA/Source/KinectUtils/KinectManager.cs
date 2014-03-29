@@ -184,6 +184,27 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         }
 
 
+        public GestureType getCurrentGesture(byte p_player_id)
+        {
+            if (p_player_id >= 0 &&
+                this.skeleton_stream != null &&
+                this.skeleton_stream.skeleton_players != null &&
+                this.skeleton_stream.player_refs != null &&
+                p_player_id < this.skeleton_stream.player_refs.Count &&
+                p_player_id < this.skeleton_stream.skeleton_players.Count)
+            {
+                // Get the player's skeleton:
+                var player = this.skeleton_stream.skeleton_players[this.skeleton_stream.player_refs[p_player_id]];
+
+                return player.last_gesture;
+            }
+            else
+            {
+                return GestureType.NONE;
+            }
+        }
+
+
         //public Vector3 getMappedJointPosition2(JointType p_joint,
         //                                      byte p_skeleton_id)
         //{

@@ -47,7 +47,8 @@ namespace KinectGame_WindowsXNA
         private enum GameState : byte
         {
             STARTUP,
-            MENU,
+            PLAYER_MENU,
+            HAND_SELECT,
             PUZZLE_PAINT,
             PUZZLE_MAKE
         }
@@ -57,22 +58,19 @@ namespace KinectGame_WindowsXNA
         public Cursor player_1_cursor { get; private set; }
         public Cursor player_2_cursor { get; private set; }
 
-        private Button test_button;
-
-        private Button test_button2;
-
-        private ColourButton test_colour_button;
-
-        private ColourButton test_colour_button2;
-
-        private ColourButton test_colour_button3;
-
-
-
+        // Main menu buttons:
+        private Button mainmenu_button_1player = null,
+                       mainmenu_button_2player = null,
+                       mainmenu_lefthand_1 = null,
+                       mainmenu_lefthand_2 = null,
+                       mainmenu_righthand_1 = null,
+                       mainmenu_righthand_2 = null,
+                       mainmenu_startgame = null;
 
         // Game stages:
         private PaintingGame painting_game = null;
         private PuzzleGame puzzle_game = null;
+
 
 
         /*/////////////////////////////////////////
@@ -85,12 +83,18 @@ namespace KinectGame_WindowsXNA
 
             // Set game flags:
             this.using_kinect_input = false; // set to false if you want to use the mouse to simulate Kinect input
+
+#if DEBUG
             this.status_debug_messages = true; // set to true if you want Kinect status messages displayed in the top-left corner
-            this.display_video_streams = true; // set to true if you want the Kinect video/data streams to be rendered at the right-hand side of the screen (windowed mode only)
+            this.display_video_streams = true; // set to true if you want the Kinect video/data streams to be rendered at the right-hand side of the screen
+#else
+            this.status_debug_messages = false;
+            this.display_video_streams = false;
+#endif
 
             // Configure graphical settings:
-            this.graphics.PreferredBackBufferWidth = 800;
-            this.graphics.PreferredBackBufferHeight = 600;
+            this.graphics.PreferredBackBufferWidth = 1024;
+            this.graphics.PreferredBackBufferHeight = 768;
             this.graphics.IsFullScreen = false;
             this.graphics.PreferMultiSampling = true; // use antialiasing
             this.graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
@@ -145,38 +149,65 @@ namespace KinectGame_WindowsXNA
                                               this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
                                               this.Content.Load<SpriteFont>("Fonts/Segoe16"),
                                               JointType.HandLeft,
-                                              0.3f,
+                                              1.0f,
                                               0);
             this.player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
                                               this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
                                               this.Content.Load<SpriteFont>("Fonts/Segoe16"),
                                               JointType.HandRight,
-                                              0.3f,
+                                              1.0f,
                                               1);
 
-            this.test_button = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
-                                          2.0f, 100, 350);
+            // Create main-menu/player-selection buttons (with offset):
+            this.mainmenu_button_1player = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_SinglePlayer"),
+                                                      1.2f,
+                                                      new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width / 2.0f) - 270),
+                                                                  (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height - 360) / 2.0f)),
+                                                      GestureType.NONE);
 
-            this.test_button2 = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
-                                          2.0f, 450, 350);
+            this.mainmenu_button_2player = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_MultiPlayer"),
+                                                      1.2f,
+                                                      new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width / 2.0f) + 10),
+                                                                  (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height - 360) / 2.0f)),
+                                                      GestureType.NONE);
 
-            this.test_colour_button = new ColourButton(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
-                                          2.0f, 500, 100, Color.Red);
+            // Create hand selection buttons (with offset):
+            this.mainmenu_lefthand_1 = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_LeftHand"),
+                                                  1.2f,
+                                                  new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width / 2.0f) - 270),
+                                                              (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height / 2.0f) - 160)),
+                                                  GestureType.NONE);
 
-            this.test_colour_button2 = new ColourButton(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
-                                          2.0f, 500, 250, Color.Blue );
+            this.mainmenu_lefthand_2 = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_LeftHand"),
+                                                  1.2f,
+                                                  new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width / 2.0f) + 110),
+                                                              (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height / 2.0f) - 160)),
+                                                  GestureType.NONE);
 
-            this.test_colour_button3 = new ColourButton(this.Content.Load<Texture2D>("Textures/Interface/UI_Logo"),
-                                         2.0f, 500, 400, Color.Yellow);
+            this.mainmenu_righthand_1 = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_RightHand"),
+                                                   1.2f,
+                                                   new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width / 2.0f) - 270),
+                                                               (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height / 2.0f))),
+                                                   GestureType.NONE);
 
+            this.mainmenu_righthand_2 = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_RightHand"),
+                                                   1.2f,
+                                                   new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width / 2.0f) + 110),
+                                                               (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height / 2.0f))),
+                                                   GestureType.NONE);
 
-            // Load minigames:
+            // Create start game button (with offset):
+            this.mainmenu_startgame = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_StartGame"),
+                                                 1.2f,
+                                                 new Vector2((float)Math.Ceiling((this.GraphicsDevice.Viewport.Width - 160) / 2.0f),
+                                                             (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height / 2.0f) + 100)),
+                                                 GestureType.NONE);
+
+            // Load first minigame:
             this.painting_game.load(this.Content,
                                     this.GraphicsDevice);
 
-            // DEBUG: test colours
             this.player_1_cursor.selected_colour = Color.Red;
-            this.player_2_cursor.selected_colour = Color.Red;
         }
      
 
@@ -218,13 +249,15 @@ namespace KinectGame_WindowsXNA
                     // Update position with the Kinect tracking of Player 1's preferred hand:
                     this.player_1_cursor.update(this.kinect_manager.getMappedJointPosition(this.player_1_cursor.getHandJoint(),
                                                                                            this.player_1_cursor.player_id),
-                                                time_span);
+                                                time_span,
+                                                this.kinect_manager.getCurrentGesture(this.player_1_cursor.player_id));
                 }
                 else
                 {
                     // Update position with the mouse/screen co-ordinates for testing purposes:
                     this.player_1_cursor.update(temp_pos,
-                                                time_span);
+                                                time_span,
+                                                GestureType.NONE);
                 }
             }
 
@@ -234,7 +267,8 @@ namespace KinectGame_WindowsXNA
                 // Update position with the Kinect tracking of Player 2's preferred hand:
                 this.player_2_cursor.update(this.kinect_manager.getMappedJointPosition(this.player_2_cursor.getHandJoint(),
                                                                                        this.player_2_cursor.player_id),
-                                            time_span);
+                                            time_span,
+                                            this.kinect_manager.getCurrentGesture(this.player_2_cursor.player_id));
             }
             
 
@@ -243,60 +277,140 @@ namespace KinectGame_WindowsXNA
             {
                 case GameState.STARTUP:
                     {
-                        this.current_game_state = GameState.MENU;
+                        this.current_game_state = GameState.PLAYER_MENU;
                         break;
                     }
-                case GameState.MENU:
+                case GameState.PLAYER_MENU:
                     {
                         // Handle one/two-player button presses:
-                        // TODO
-                        this.test_button.Update(player_1_cursor, p_game_time);
-                        this.test_button2.Update(player_1_cursor, p_game_time);
-
-                        if(this.test_button.isClicked() || this.test_button2.isClicked())
+                        if (this.mainmenu_button_1player != null)
                         {
-                            Console.WriteLine("hello autistic world!");
+                            this.mainmenu_button_1player.Update(this.player_1_cursor, p_game_time);
+                        }
+
+                        if (this.mainmenu_button_2player != null)
+                        {
+                            this.mainmenu_button_2player.Update(this.player_1_cursor, p_game_time);
+                        }
+
+                        if (this.mainmenu_button_1player != null &&
+                            this.mainmenu_button_1player.isClicked())
+                        {
+                            this.painting_game.setTwoPlayer(false);
+                            this.painting_game.setTwoPlayer(false);
+                            this.current_game_state = GameState.HAND_SELECT;
+                        }
+
+                        if (this.mainmenu_button_2player != null &&
+                            this.mainmenu_button_2player.isClicked())
+                        {
+                            this.painting_game.setTwoPlayer(true);
+                            this.painting_game.setTwoPlayer(true);
+                            this.current_game_state = GameState.HAND_SELECT;
+                        }
+                        
+                        break;
+                    }
+                case GameState.HAND_SELECT:
+                    {
+                        // Handle preferred hand-selection button presses:
+                        if (this.mainmenu_lefthand_1 != null)
+                        {
+                            this.mainmenu_lefthand_1.Update(this.player_1_cursor, p_game_time);
+                        }
+
+                        if (this.mainmenu_lefthand_2 != null &&
+                            this.using_kinect_input)
+                        {
+                            this.mainmenu_lefthand_2.Update(this.player_2_cursor, p_game_time);
+                        }
+
+                        if (this.mainmenu_righthand_1 != null)
+                        {
+                            this.mainmenu_righthand_1.Update(this.player_1_cursor, p_game_time);
+                        }
+
+                        if (this.mainmenu_righthand_2 != null &&
+                            this.using_kinect_input)
+                        {
+                            this.mainmenu_righthand_2.Update(this.player_2_cursor, p_game_time);
+                        }
+
+                        // Swap the player's preferred hands (if applicable):
+                        if (this.mainmenu_lefthand_1 != null &&
+                            this.mainmenu_lefthand_1.isClicked() &&
+                            this.player_1_cursor.getHandJoint() == JointType.HandRight)
+                        {
+                            this.player_1_cursor.swapHands();
+                        }
+
+                        if (this.mainmenu_lefthand_2 != null &&
+                            this.mainmenu_lefthand_2.isClicked() &&
+                            this.player_2_cursor.getHandJoint() == JointType.HandRight &&
+                            this.using_kinect_input)
+                        {
+                            this.player_2_cursor.swapHands();
+                        }
+
+                        if (this.mainmenu_righthand_1 != null &&
+                            this.mainmenu_righthand_1.isClicked() &&
+                            this.player_1_cursor.getHandJoint() == JointType.HandLeft)
+                        {
+                            this.player_1_cursor.swapHands();
+                        }
+
+                        if (this.mainmenu_righthand_2 != null &&
+                            this.mainmenu_righthand_2.isClicked() &&
+                            this.player_2_cursor.getHandJoint() == JointType.HandLeft &&
+                            this.using_kinect_input)
+                        {
+                            this.player_2_cursor.swapHands();
+                        }
+
+                        // Handle start game button press (by player 1):
+                        if (this.mainmenu_startgame != null)
+                        {
+                            this.mainmenu_startgame.Update(this.player_1_cursor, p_game_time);
+                        }
+
+                        if (this.mainmenu_startgame != null &&
+                            this.mainmenu_startgame.isClicked())
+                        {
                             this.current_game_state = GameState.PUZZLE_PAINT;
                         }
-                        //if(this.test_button.isClicked())
-                        //{
-                        //     DO SOMETHING WITH BUTTON
-                        //    Console.WriteLine("hello");
-                        //}
+
                         break;
                     }
                 case GameState.PUZZLE_PAINT:
                     {
                         // Handle painting game:
-                        this.test_colour_button.Update(player_1_cursor, p_game_time);
-                        this.test_colour_button2.Update(player_1_cursor, p_game_time);
-                        this.test_colour_button3.Update(player_1_cursor, p_game_time);
-                        if(painting_game != null)
+                        if(this.painting_game != null)
                         {
-                            painting_game.update(p_game_time,
-                                                 this.player_1_cursor,
-                                                 this.player_2_cursor);
+                            this.painting_game.update(p_game_time,
+                                                      this.player_1_cursor,
+                                                      this.player_2_cursor);
+
+                            if (this.painting_game.isFinished())
+                            {
+                                this.puzzle_game.setupImage(this.painting_game.getPaintedImage(),
+                                                            this.painting_game.getOutlineImage());
+                                this.current_game_state = GameState.PUZZLE_MAKE;
+                            }
                         }
-                        if(this.test_colour_button.isClicked())
-                        {
-                             this.player_1_cursor.selected_colour = Color.Red;
-                        }
-                        if(this.test_colour_button2.isClicked())
-                        {
-                             this.player_1_cursor.selected_colour = Color.Blue;
-                        }
-                        if(this.test_colour_button3.isClicked())
-                        {
-                             this.player_1_cursor.selected_colour = Color.Yellow;
-                        }
+
                         break;
                     }
                 case GameState.PUZZLE_MAKE:
                     {
                         // Handle puzzle game:
-                        if (puzzle_game != null)
+                        if (this.puzzle_game != null)
                         {
-                            puzzle_game.update(p_game_time);
+                            this.puzzle_game.update(p_game_time);
+
+                            if(this.puzzle_game.isFinished())
+                            {
+                                this.current_game_state = GameState.STARTUP;
+                            }
                         }
                         break;
                     }
@@ -325,6 +439,7 @@ namespace KinectGame_WindowsXNA
             }
 
             this.GraphicsDevice.Clear(Color.Black);
+            bool draw_second_cursor = this.using_kinect_input;
 
             // RENDERING GAME STATE(S):
             switch(this.current_game_state)
@@ -338,32 +453,70 @@ namespace KinectGame_WindowsXNA
 
                         break;
                     }
-                case GameState.MENU:
+                case GameState.PLAYER_MENU:
                     {
                         // Draw the simple main menu:
-                        this.test_button.Draw(this.sprite_batch);
-                        this.test_button2.Draw(this.sprite_batch);
+                        if(this.mainmenu_button_1player != null)
+                        {
+                            this.mainmenu_button_1player.draw(this.sprite_batch);
+                        }
+
+                        if (this.mainmenu_button_2player != null)
+                        {
+                            this.mainmenu_button_2player.draw(this.sprite_batch);
+                        }
+
+                        break;
+                    }
+                case GameState.HAND_SELECT:
+                    {
+                        // Draw the hand selection buttons:
+                        if (this.mainmenu_lefthand_1 != null)
+                        {
+                            this.mainmenu_lefthand_1.draw(this.sprite_batch);
+                        }
+
+                        if (this.mainmenu_lefthand_2 != null &&
+                            draw_second_cursor)
+                        {
+                            this.mainmenu_lefthand_2.draw(this.sprite_batch);
+                        }
+
+                        if (this.mainmenu_righthand_1 != null)
+                        {
+                            this.mainmenu_righthand_1.draw(this.sprite_batch);
+                        }
+
+                        if (this.mainmenu_righthand_2 != null &&
+                            draw_second_cursor)
+                        {
+                            this.mainmenu_righthand_2.draw(this.sprite_batch);
+                        }
+
+                        if (this.mainmenu_startgame != null)
+                        {
+                            this.mainmenu_startgame.draw(this.sprite_batch);
+                        }
+
                         break;
                     }
                 case GameState.PUZZLE_PAINT:
                     {
                         // Draw the puzzle-painting game:
-                        this.test_colour_button.Draw(this.sprite_batch);
-                        this.test_colour_button2.Draw(this.sprite_batch);
-                        this.test_colour_button3.Draw(this.sprite_batch);
-                        if (painting_game != null)
+                        if (this.painting_game != null)
                         {
-                            painting_game.draw(p_game_time, this.sprite_batch);
-
+                            this.painting_game.draw(p_game_time, this.sprite_batch);
+                            draw_second_cursor = painting_game.isTwoPlayer();
                         }
                         break;
                     }
                 case GameState.PUZZLE_MAKE:
                     {
                         // Draw the puzzle-piece assembly game:
-                        if (puzzle_game != null)
+                        if (this.puzzle_game != null)
                         {
-                            puzzle_game.draw(p_game_time, this.sprite_batch);
+                            this.puzzle_game.draw(p_game_time, this.sprite_batch);
+                            draw_second_cursor = this.puzzle_game.isTwoPlayer();
                         }
                         break;
                     }
@@ -386,14 +539,6 @@ namespace KinectGame_WindowsXNA
                 this.kinect_manager.drawStreamManagers(this.sprite_batch);
             }
 
-            // Draw debug Kinect status (if required):
-            if(this.status_debug_messages &&
-               this.kinect_manager != null)
-            {
-                this.kinect_manager.drawStatusMessage(this.sprite_batch);
-                this.kinect_manager.drawSkeletonGesture(this.sprite_batch);
-            }
-
             // Draw player hand cursors:
             if (this.player_1_cursor != null)
             {
@@ -401,9 +546,17 @@ namespace KinectGame_WindowsXNA
             }
 
             if (this.player_2_cursor != null &&
-                this.using_kinect_input)
+                draw_second_cursor)
             {
                 this.player_2_cursor.draw(this.sprite_batch);
+            }
+
+            // Draw debug Kinect status (if required):
+            if(this.status_debug_messages &&
+               this.kinect_manager != null)
+            {
+                this.kinect_manager.drawStatusMessage(this.sprite_batch);
+                this.kinect_manager.drawSkeletonGesture(this.sprite_batch);
             }
 
             base.Draw(p_game_time);

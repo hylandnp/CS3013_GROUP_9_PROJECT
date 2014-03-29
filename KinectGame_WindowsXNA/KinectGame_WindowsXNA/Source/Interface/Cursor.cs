@@ -1,4 +1,5 @@
-﻿using Microsoft.Kinect;
+﻿using KinectGame_WindowsXNA.Source.KinectUtils;
+using Microsoft.Kinect;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -27,6 +28,8 @@ namespace KinectGame_WindowsXNA.Source.Interface
                         previous_pos;
 
         private JointType hand_joint;
+
+        public GestureType gesture { get; private set; }
 
         // Rendering info:
         private Texture2D hand_texture,
@@ -61,22 +64,22 @@ namespace KinectGame_WindowsXNA.Source.Interface
             this.selected_colour = Color.Wheat;
             this.debug_font = p_debug_font;
             this.debug_message = "";
+            this.gesture = GestureType.NONE;
 
             // Set drawing origin to the centre of the texture:
-            this.hand_origin = new Vector2((float)Math.Ceiling((this.hand_texture.Bounds.Width / 2.0f) - (256 / 2.0)),
+            this.hand_origin = new Vector2((float)Math.Ceiling((this.hand_texture.Bounds.Width / 2.0f) - (this.hand_texture.Width / 2.0f)),
                                            (float)Math.Ceiling(this.hand_texture.Bounds.Height / 2.0f));
 
             this.hand_dest_rect = new Rectangle(0, 0,
-                                                (int)Math.Ceiling((this.hand_texture.Bounds.Width - 256) * p_scale),
+                                                (int)Math.Ceiling((this.hand_texture.Bounds.Width - (this.hand_texture.Width / 2.0f)) * p_scale),
                                                 (int)Math.Ceiling(this.hand_texture.Bounds.Height * p_scale));
 
             // Position the colour icon over the hand texture (with offset):
-            this.colour_rect = new Rectangle(this.hand_dest_rect.X - 20,
-                                             this.hand_dest_rect.Y + 25,
+            this.colour_rect = new Rectangle((int)this.hand_origin.X,
+                                             (int)this.hand_origin.Y,
                                              (int)Math.Ceiling(this.colour_texture.Bounds.Width * p_scale),
                                              (int)Math.Ceiling(this.colour_texture.Bounds.Height * p_scale));
-
-            this.debug_msg_pos = new Vector2(0, 0);
+            this.debug_msg_pos = Vector2.Zero;
 
             // Reset hands & texture source rectangle:
             this.swapHands();
@@ -92,22 +95,32 @@ namespace KinectGame_WindowsXNA.Source.Interface
           * UPDATE FUNCTION(S)
           *////////////////////////////////////////
         public void update(Vector3 p_new_position,
-                           TimeSpan p_new_time)
+                           TimeSpan p_new_time,
+                           GestureType p_gesture)
         {
             // Update the positions of the cursor:
             this.previous_pos = this.current_pos;
             this.current_pos = p_new_position;
+            this.gesture = p_gesture;
 
-            this.hand_dest_rect.X = (int)this.current_pos.X;
+            this.hand_dest_rect.X = (int)this.current_pos.X - (int)Math.Ceiling(this.hand_source_rect.Width / 2.0f);
             this.hand_dest_rect.Y = (int)this.current_pos.Y;
 
             // Position the colour icon over the hand texture (with offset):
-            this.colour_rect.X = this.hand_dest_rect.X - 20;
-            this.colour_rect.Y = this.hand_dest_rect.Y + 25;
+            if (this.hand_joint == JointType.HandLeft)
+            {
+                this.colour_rect.X = this.hand_dest_rect.X + 23;
+                this.colour_rect.Y = this.hand_dest_rect.Y + 6;
+            }
+            else
+            {
+                this.colour_rect.X = this.hand_dest_rect.X + 35;
+                this.colour_rect.Y = this.hand_dest_rect.Y + 6;
+            }
 
             // Position debug message:
-            this.debug_msg_pos.X = this.hand_dest_rect.X + 25;
-            this.debug_msg_pos.Y = this.hand_dest_rect.Y + 25;
+            this.debug_msg_pos.X = this.hand_dest_rect.X + 40;
+            this.debug_msg_pos.Y = this.hand_dest_rect.Y + 60;
         }
 
 
@@ -128,8 +141,8 @@ namespace KinectGame_WindowsXNA.Source.Interface
                 this.hand_joint = JointType.HandRight;
 
                 // Set right-hand of texture drawable:
-                this.hand_source_rect = new Rectangle(265, 0,
-                                                      this.hand_texture.Bounds.Width - 265,
+                this.hand_source_rect = new Rectangle((int)Math.Ceiling(this.hand_texture.Width / 2.0f), 0,
+                                                      this.hand_texture.Bounds.Width - (int)Math.Ceiling(this.hand_texture.Width / 2.0f),
                                                       this.hand_texture.Bounds.Height);
             }
             else
@@ -138,7 +151,7 @@ namespace KinectGame_WindowsXNA.Source.Interface
 
                 // Set left-hand of texture drawable:
                 this.hand_source_rect = new Rectangle(0, 0,
-                                                      this.hand_texture.Bounds.Width - 265,
+                                                      this.hand_texture.Bounds.Width - (int)Math.Ceiling(this.hand_texture.Width / 2.0f),
                                                       this.hand_texture.Bounds.Height);
             }
         }
@@ -161,9 +174,19 @@ namespace KinectGame_WindowsXNA.Source.Interface
             if(this.current_pos != Vector3.Zero)
             {
                 p_sprite_batch.Begin();
-                p_sprite_batch.Draw(this.hand_texture, this.hand_dest_rect, this.hand_source_rect, Color.White, 0.0f, this.hand_origin, SpriteEffects.None, 0.0f);
+
+                p_sprite_batch.Draw(this.hand_texture,
+                                    this.hand_dest_rect,
+                                    this.hand_source_rect,
+                                    Color.White,
+                                    0.0f,
+                                    this.hand_origin,
+                                    SpriteEffects.None, 0.0f);
                 p_sprite_batch.Draw(this.colour_texture, this.colour_rect, this.selected_colour);
-                if(this.debug_msg_pos != null) p_sprite_batch.DrawString(this.debug_font, this.debug_message, this.debug_msg_pos, Color.Wheat);
+
+#if DEBUG
+                if(this.debug_msg_pos != null) p_sprite_batch.DrawString(this.debug_font, this.debug_message, this.debug_msg_pos, Color.Red);
+#endif
                 p_sprite_batch.End();
             }
         }

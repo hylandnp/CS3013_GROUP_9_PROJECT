@@ -49,6 +49,11 @@ Neil (04/03/2014)
 - Skeleton rendering now fixed, added boolean "was_drawn" flag to the manager classes (used to check when to update the texture to save on function calls).
 
 
+Richard (05-12/03/2014)
+
+- Research for Kinect integration & XNA programming.
+
+
 Neil (09/03/2014)
 
 - Minor bugfixes.
@@ -94,3 +99,19 @@ Patrick (23/03/2014)
 Neil (23/03/2014)
 
 - Moved colouring-in to the PaintingGame class.
+
+
+Gavan (25-28/03/2014)
+
+- Implemented button timing.
+
+- Finished Button & ColourButton implementation.
+
+
+Neil (29/03/2014)
+
+- Setup menus & colour selection UI (unfinished).
+
+
+
+

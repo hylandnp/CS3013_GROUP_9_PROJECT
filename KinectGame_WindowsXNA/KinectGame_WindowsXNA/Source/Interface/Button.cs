@@ -7,11 +7,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using KinectGame_WindowsXNA.Source.KinectUtils;
 
 
 /*CHANGELOG
  * NEIL - Created the empty class.
  * GAVAN - Button functionality added.
+ * GAVAN - Button timing implemented.
+ * NEIL - Formatting changes.
  */
 
 namespace KinectGame_WindowsXNA.Source.Interface
@@ -19,92 +22,132 @@ namespace KinectGame_WindowsXNA.Source.Interface
     // Simple button for the Kinect game...
     public class Button
     {
-        Texture2D image;
-        Rectangle location;
-        string text;
-        Vector2 textLocation;
-        MouseState mouse;
-        MouseState oldMouse;
-        bool clicked;
-        bool hover;
-        float target_time;
-        Stopwatch timer;
+        private Texture2D image;
+        private Rectangle location;
+        private bool clicked,
+                     hover;
+        private float target_time;
+        private Stopwatch timer;
+        private GestureType target_gesture;
 
 
-        public Button(Texture2D texture, float startTime, int x, int y)
+        public Button(Texture2D p_texture,
+                      float p_target_time,
+                      Vector2 p_pos,
+                      GestureType p_gesture)
         {
-            image = texture;
-            location = new Rectangle(x, y, image.Width, image.Height);
-            target_time = startTime  * 1000;
-            hover = false;
-            timer = new Stopwatch();
+            // Initialisation...
+            this.image = p_texture;
+            this.target_gesture = p_gesture;
+
+            this.location = new Rectangle((int)Math.Ceiling(p_pos.X), 
+                                          (int)Math.Ceiling(p_pos.Y),
+                                          this.image.Width,
+                                          this.image.Height);
+            
+            this.target_time = p_target_time  * 1000; // in microseconds
+            this.hover = false;
+
+            this.timer = new Stopwatch();
         }
 
-        public void Update(Cursor player_one_cursor, GameTime p_time)
-        {
-            mouse = Mouse.GetState();
-            clicked = false;
 
-            if (location.Contains(new Point(mouse.X, mouse.Y)))
+
+        /*/////////////////////////////////////////
+          * UPDATE FUNCTION
+          *////////////////////////////////////////
+        public void Update(Cursor p_player_cursor, GameTime p_time)
+        {
+            // Update the simple game button...
+            this.clicked = false;
+            Vector2 current_pos = p_player_cursor.get2DPosition();
+
+            if (this.location.Contains(new Point((int)Math.Ceiling(current_pos.X),
+                                                 (int)Math.Ceiling(current_pos.Y))))
             {
-                if (!hover)
+                // If the player's cursor is over the button's rect bounds:
+                if (!this.hover)
                 {
-                    hover = true;
-                    if (!timer.IsRunning) timer.Restart();
+                    this.hover = true;
+                    if (!this.timer.IsRunning) this.timer.Restart();
                 }
             }
             else
             {
-                hover = false;
-                clicked = false;
-                timer.Reset();
+                this.hover = false;
+                this.clicked = false;
+                this.timer.Reset();
             }
 
-            if (hover && timer.IsRunning)
+            // Check if target hover time has elapsed:
+            if (this.hover && this.timer.IsRunning)
             {
-                long current_time = timer.ElapsedMilliseconds;
+                long current_time = this.timer.ElapsedMilliseconds;
 
-                if (current_time >= target_time)
+                if (current_time >= this.target_time)
                 {
-                    Console.WriteLine(current_time.ToString());
-                    timer.Reset();
-                    clicked = true;
-                    player_one_cursor.debug_message = "";
-                }
-                else
-                {
-                    player_one_cursor.debug_message = current_time.ToString();
+                    this.timer.Reset();
+
+                    if (this.target_gesture == GestureType.NONE || p_player_cursor.gesture == this.target_gesture)
+                    {
+                        this.clicked = true;
+                    }
                 }
             }
         }
 
+
+
+        /*/////////////////////////////////////////
+          * RENDER FUNCTION
+          *////////////////////////////////////////
+        public void draw(SpriteBatch p_sprite_batch)
+        {
+            // Draw the button's texture to the screen...
+            p_sprite_batch.Begin();
+
+            if(this.image != null)
+            {
+                if(this.hover)
+                {
+                    p_sprite_batch.Draw(this.image, this.location, Color.Gold);
+                }
+                else
+                {
+                    p_sprite_batch.Draw(this.image, this.location, Color.White);
+                }
+            }
+
+            p_sprite_batch.End();
+        }
+
+
+
+        /*/////////////////////////////////////////
+          * OTHER FUNCTION(S)
+          *////////////////////////////////////////
         public bool isClicked()
         {
-            bool is_clicked = clicked;
-            clicked = false;
+            // Check for clicked callback, resets the clicked callback boolean...
+            bool is_clicked = this.clicked;
+            this.clicked = false;
             return is_clicked;
         }
 
 
-        public void Location(int x, int y)
+        public void setPosition(int p_xpos, int p_ypos)
         {
-            location.X = x;
-            location.Y = y;
+            // Change the position of the button...
+            this.location.X = p_xpos;
+            this.location.Y = p_ypos;
         }
 
-        public void Draw(SpriteBatch p_spriteBatch)
-        {
-            p_spriteBatch.Begin();
-            if(clicked)
-            { 
-                    p_spriteBatch.Draw(image, location, Color.Green);
-            }
-            else
-            {
-                    p_spriteBatch.Draw(image, location, Color.White);
-            }
-            p_spriteBatch.End();
-        }
 
+        public void setPosition(Vector2 p_pos)
+        {
+            // Change the position of the button...
+            this.location.X = (int)Math.Ceiling(p_pos.X);
+            this.location.Y = (int)Math.Ceiling(p_pos.Y);
+        }
     }
 }
