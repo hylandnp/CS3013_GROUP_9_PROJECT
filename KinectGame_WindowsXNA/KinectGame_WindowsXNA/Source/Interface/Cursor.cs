@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-/*CHANGELOG
+/*CHANGELOGw
  * NEIL - Created the class & added texture loading.
  * PATRICK - Added cursor tracking, simple rendering & gesture recognition.
  * NEIL - Minor formatting & bug fixes.

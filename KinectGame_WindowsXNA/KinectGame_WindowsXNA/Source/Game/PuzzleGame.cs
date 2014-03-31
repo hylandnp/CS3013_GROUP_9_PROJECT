@@ -23,13 +23,25 @@ namespace KinectGame_WindowsXNA.Source.Game
                      is_finished = false;
 
 
+        public Color selected_colour { get; set; }
+        public string debug_message { get; set; }
+
+        private Texture2D image_texture,
+                         colour_texture;
+        private Rectangle image_dest_rect,
+                          image_source_rect,
+                          colour_rect;
+
 
         /*/////////////////////////////////////////
           * CONSTRUCTOR
           *////////////////////////////////////////
-        public PuzzleGame()
+        public PuzzleGame(Texture2D p_texture,
+                      Texture2D p_col_texture)
         {
             // TODO
+            this.image_texture = p_texture;
+            this.colour_texture = p_col_texture;
         }
 
 
