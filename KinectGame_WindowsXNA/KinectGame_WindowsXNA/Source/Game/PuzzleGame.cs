@@ -102,7 +102,8 @@ namespace KinectGame_WindowsXNA.Source.Game
 
             p_sprite_batch.Begin();
 
-            p_sprite_batch.Draw(this.painted_texture, new Rectangle(10, 100, 64, 256), this.temp_rects[3,0], Color.White);
+            p_sprite_batch.Draw(this.painted_texture, new Rectangle(10, 100, 64, 256), this.temp_rects[4, 1], Color.White);
+            p_sprite_batch.Draw(this.outline_texture, new Rectangle(10, 100, 64, 256), this.temp_rects[4, 1], Color.White);
 
             p_sprite_batch.End();
         }
