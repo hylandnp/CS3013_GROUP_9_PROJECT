@@ -21,13 +21,14 @@ namespace KinectGame_WindowsXNA.Source.Game
         ///////////////////////////////////////
         private bool is_two_player = false,
                      is_finished = false;
+        Rectangle[,] temp_rects;
 
 
         public Color selected_colour { get; set; }
         public string debug_message { get; set; }
 
-        private Texture2D image_texture,
-                         colour_texture;
+        private Texture2D outline_texture,
+                          painted_texture;
         private Rectangle image_dest_rect,
                           image_source_rect,
                           colour_rect;
@@ -36,12 +37,10 @@ namespace KinectGame_WindowsXNA.Source.Game
         /*/////////////////////////////////////////
           * CONSTRUCTOR
           *////////////////////////////////////////
-        public PuzzleGame(Texture2D p_texture,
-                      Texture2D p_col_texture)
+        public PuzzleGame()
         {
             // TODO
-            this.image_texture = p_texture;
-            this.colour_texture = p_col_texture;
+            
         }
 
 
@@ -52,13 +51,34 @@ namespace KinectGame_WindowsXNA.Source.Game
         public void load(ContentManager p_content)
         {
             // TODO
+            int across = 8;
+            int down = 2;
+
+            temp_rects = new Rectangle[across, down];
+
+            int temp_x = 0,
+                temp_y = 0;
+
+            for (int i = 0; i < across; i++)
+            {
+                temp_x = i * 64;
+
+                for (int j = 0; j < down; j++)
+                {
+                    temp_y = j * 256;
+
+                    temp_rects[i, j] = new Rectangle(temp_x, temp_y, 64, 256);
+                }
+            }
         }
 
 
         public void setupImage(Texture2D p_img_base,
                                Texture2D p_img_outline)
         {
-            // TODO
+            // Store reference to the painted image:
+            this.painted_texture = p_img_base;
+            this.outline_texture = p_img_outline;
         }
 
 
@@ -79,6 +99,12 @@ namespace KinectGame_WindowsXNA.Source.Game
         public void draw(GameTime p_time, SpriteBatch p_sprite_batch)
         {
             // TODO
+
+            p_sprite_batch.Begin();
+
+            p_sprite_batch.Draw(this.painted_texture, new Rectangle(10, 100, 64, 256), this.temp_rects[3,0], Color.White);
+
+            p_sprite_batch.End();
         }
 
 

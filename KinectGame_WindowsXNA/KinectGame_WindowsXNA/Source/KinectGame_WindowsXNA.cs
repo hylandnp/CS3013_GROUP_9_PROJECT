@@ -203,10 +203,6 @@ namespace KinectGame_WindowsXNA
                                                              (float)Math.Ceiling((this.GraphicsDevice.Viewport.Height / 2.0f) + 100)),
                                                  GestureType.NONE);
 
-            // Load first minigame:
-            this.painting_game.load(this.Content,
-                                    this.GraphicsDevice);
-
             this.player_1_cursor.selected_colour = Color.Red;
         }
      
@@ -376,6 +372,8 @@ namespace KinectGame_WindowsXNA
                         if (this.mainmenu_startgame != null &&
                             this.mainmenu_startgame.isClicked())
                         {
+                            this.painting_game.load(this.Content,
+                                                    this.GraphicsDevice);
                             this.current_game_state = GameState.PUZZLE_PAINT;
                         }
 
@@ -394,6 +392,7 @@ namespace KinectGame_WindowsXNA
                             {
                                 this.puzzle_game.setupImage(this.painting_game.getPaintedImage(),
                                                             this.painting_game.getOutlineImage());
+                                this.puzzle_game.load(this.Content);
                                 this.current_game_state = GameState.PUZZLE_MAKE;
                             }
                         }
