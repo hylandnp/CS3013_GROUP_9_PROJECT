@@ -33,6 +33,9 @@ namespace KinectGame_WindowsXNA.Source.Game
                           image_source_rect,
                           colour_rect;
 
+        private int across;
+        private int down;
+
 
         /*/////////////////////////////////////////
           * CONSTRUCTOR
@@ -40,6 +43,8 @@ namespace KinectGame_WindowsXNA.Source.Game
         public PuzzleGame()
         {
             // TODO
+            across = 8;
+            down = 2;
             
         }
 
@@ -51,8 +56,6 @@ namespace KinectGame_WindowsXNA.Source.Game
         public void load(ContentManager p_content)
         {
             // TODO
-            int across = 8;
-            int down = 2;
 
             temp_rects = new Rectangle[across, down];
 
@@ -101,10 +104,21 @@ namespace KinectGame_WindowsXNA.Source.Game
             // TODO
 
             p_sprite_batch.Begin();
+            int temp_x = 0;
+            int temp_y = 0;
 
-            p_sprite_batch.Draw(this.painted_texture, new Rectangle(10, 100, 64, 256), this.temp_rects[4, 1], Color.White);
-            p_sprite_batch.Draw(this.outline_texture, new Rectangle(10, 100, 64, 256), this.temp_rects[4, 1], Color.White);
+            for (int i = 0; i < across; i++  )
+            {
+                temp_x = i * 64;
 
+                for(int j = 0; j < down; j++)
+                {
+                    temp_y = j * 256;
+                    p_sprite_batch.Draw(this.painted_texture, new Rectangle(temp_x, temp_y, 64, 256), this.temp_rects[i, j], Color.White);
+                    p_sprite_batch.Draw(this.outline_texture, new Rectangle(temp_x, temp_y, 64, 256), this.temp_rects[i, j], Color.White);
+
+                }
+            }           
             p_sprite_batch.End();
         }
 
