@@ -131,3 +131,7 @@ Patrick (03/03/2014)
 - Fixed puzzle-piece selection.
 
 
+Richard/Gavan/Neil (03/03/2014)
+
+- Finished up UI & fixes minor bugs.
+

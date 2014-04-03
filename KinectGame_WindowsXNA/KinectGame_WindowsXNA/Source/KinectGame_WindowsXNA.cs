@@ -83,7 +83,7 @@ namespace KinectGame_WindowsXNA
             this.graphics = new GraphicsDeviceManager(this);
 
             // Set game flags:
-            this.using_kinect_input = false; // set to false if you want to use the mouse to simulate Kinect input
+            this.using_kinect_input = true; // set to false if you want to use the mouse to simulate Kinect input
 
 #if DEBUG
             this.status_debug_messages = true; // set to true if you want Kinect status messages displayed in the top-left corner
@@ -157,7 +157,7 @@ namespace KinectGame_WindowsXNA
                                               this.Content.Load<SpriteFont>("Fonts/Segoe16"),
                                               JointType.HandRight,
                                               1.0f,
-                                              0);
+                                              1);
 
             // Create main-menu/player-selection buttons (with offset):
             this.mainmenu_button_1player = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_SinglePlayer"),

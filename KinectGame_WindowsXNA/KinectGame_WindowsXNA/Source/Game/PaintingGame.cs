@@ -381,6 +381,7 @@ namespace KinectGame_WindowsXNA.Source.Game
                 {
                     if (this.p2_cbuttons[i] != null)
                     {
+                        this.p2_cbuttons[i].button_colour = this.valid_button_colours[this.p2_colours[i]];
                         this.p2_cbuttons[i].Update(p_player_2, p_time);
 
                         if(this.p2_cbuttons[i].isClicked())
