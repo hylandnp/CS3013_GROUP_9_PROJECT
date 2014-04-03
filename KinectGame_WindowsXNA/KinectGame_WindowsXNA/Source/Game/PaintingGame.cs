@@ -13,6 +13,7 @@ using System.Text;
  * PATRICK - Implemented image colouring.
  * GAVAN - Added simple & colour-selection buttons.
  * RICHARD - Fixed colour button cycling.
+ * PATRICK - Fixed colour selection with Kinect bug.
  */
 
 namespace KinectGame_WindowsXNA.Source.Game
@@ -197,6 +198,12 @@ namespace KinectGame_WindowsXNA.Source.Game
             Vector2 p2 = ((this.is_two_player && p_player_2 != null) ? p_player_2.get2DPosition() : Vector2.Zero);
             bool p1_can_paint = false,
                  p2_can_paint = false;
+
+            // Round positions:
+            p1.X = (float)Math.Ceiling(p1.X);
+            p1.Y = (float)Math.Ceiling(p1.Y);
+            p2.X = (float)Math.Ceiling(p2.X);
+            p2.Y = (float)Math.Ceiling(p2.Y);
 
             // Adjust co-ordinates to paintable image rect:
             if(p1 != Vector2.Zero &&

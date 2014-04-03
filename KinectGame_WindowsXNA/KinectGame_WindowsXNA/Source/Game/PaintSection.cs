@@ -141,6 +141,7 @@ namespace KinectGame_WindowsXNA.Source.Game
             int temp_coords = this.convertCoords(p_coords, p_rect_width);
 
             if (this.valid_section != null &&
+                temp_coords >= 0 &&
                 temp_coords < this.valid_section.Length &&
                 this.valid_section.Get(temp_coords))
             {
@@ -176,7 +177,7 @@ namespace KinectGame_WindowsXNA.Source.Game
                                   int p_rect_width)
         {
             // Convert Vector2 co-ordinates to 1D array positions:
-            return (int)(p_coords.X + p_coords.Y * p_rect_width);
+            return (int)Math.Ceiling(p_coords.X + p_coords.Y * p_rect_width);
         }
     }
 }

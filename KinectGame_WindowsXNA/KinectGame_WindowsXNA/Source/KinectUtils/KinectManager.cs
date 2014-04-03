@@ -15,8 +15,8 @@ using KinectGame_WindowsXNA.Source;
 
 /*CHANGELOG:
  * NEIL - Created class & basic functionality (modified from Microsoft examples).
- * NEIL - Removed the old rendering resources & functions.
- * NEIL - Added reference object to the base game class.
+ * RICHARD - Removed the old rendering resources & functions.
+ * RICHARD - Added reference object to the base game class.
  * NEIL - Moved the colour stream manager to this class so that disconnecting/reconnecting resets the stream managers.
  * NEIL - Added remaining data stream managers.
  */
@@ -239,7 +239,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                  float p_position)
         {
             // Scale a position/dimension value:
-            float result = (((p_max_pixels / p_max_skeleton) / 2.0f) * p_position) + (p_max_pixels / 2.0f);
+            float result = ((((p_max_pixels / p_max_skeleton) / 2.0f) * p_position) + (p_max_pixels / 2.0f)) * 1.5f;
 
             if(result > p_max_pixels)
             {
