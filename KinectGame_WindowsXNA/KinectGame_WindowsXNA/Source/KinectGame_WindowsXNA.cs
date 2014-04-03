@@ -301,8 +301,8 @@ namespace KinectGame_WindowsXNA
                         if (this.mainmenu_button_2player != null &&
                             this.mainmenu_button_2player.isClicked())
                         {
-                            this.painting_game.setTwoPlayer(true);
-                            this.painting_game.setTwoPlayer(true);
+                            this.puzzle_game.setTwoPlayer(true);
+                            this.puzzle_game.setTwoPlayer(true);
                             this.current_game_state = GameState.HAND_SELECT;
                         }
                         
@@ -392,8 +392,10 @@ namespace KinectGame_WindowsXNA
                             if (this.painting_game.isFinished())
                             {
                                 this.puzzle_game.setupImage(this.painting_game.getPaintedImage(),
-                                                            this.painting_game.getOutlineImage());
-                                this.puzzle_game.load(this.Content);
+                                                            this.painting_game.getOutlineImage(),
+                                                            this.painting_game.getImageRect());
+                                this.puzzle_game.load(this.Content,
+                                                      this.GraphicsDevice);
                                 this.current_game_state = GameState.PUZZLE_MAKE;
                             }
                         }
@@ -405,7 +407,9 @@ namespace KinectGame_WindowsXNA
                         // Handle puzzle game:
                         if (this.puzzle_game != null)
                         {
-                            this.puzzle_game.update(p_game_time);
+                            this.puzzle_game.update(p_game_time,
+                                                    this.player_1_cursor,
+                                                    this.player_2_cursor);
 
                             if(this.puzzle_game.isFinished())
                             {

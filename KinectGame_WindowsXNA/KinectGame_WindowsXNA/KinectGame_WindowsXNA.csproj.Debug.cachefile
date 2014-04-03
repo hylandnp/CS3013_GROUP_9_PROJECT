@@ -8,6 +8,7 @@ Content\Textures\Interface\UI_CursorHand.xnb
 Content\Textures\Game\Picture_1_Outline.xnb
 Content\Textures\Game\Picture_1_Sections.xnb
 Content\Textures\Interface\UI_CursorColourIcon.xnb
+Content\Textures\Interface\UI_ColourButton.xnb
 Content\Textures\Interface\UI_MultiPlayer.xnb
 Content\Textures\Interface\UI_SinglePlayer.xnb
 Content\Textures\Interface\UI_LeftHand.xnb
@@ -15,6 +16,8 @@ Content\Textures\Interface\UI_RightHand.xnb
 Content\Textures\Interface\UI_StartGame.xnb
 Content\Textures\Interface\UI_ButtonConfirm.xnb
 Content\Textures\Interface\UI_ButtonDecline.xnb
-Content\Textures\Interface\UI_ColourButton.xnb
 Content\Textures\Interface\UI_ButtonDown.xnb
 Content\Textures\Interface\UI_ButtonUp.xnb
+Content\Textures\Game\Picture_2_Outline.xnb
+Content\Textures\Game\Picture_2_Sections.xnb
+Content\Textures\Game\PuzzleMarkers.xnb

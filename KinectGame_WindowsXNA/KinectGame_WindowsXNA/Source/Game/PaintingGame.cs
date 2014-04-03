@@ -43,6 +43,7 @@ namespace KinectGame_WindowsXNA.Source.Game
                         p2_colours;
         private ColourButton[] p1_cbuttons = null,
                                p2_cbuttons = null;
+        private Random rand = null;
 
 
 
@@ -53,6 +54,10 @@ namespace KinectGame_WindowsXNA.Source.Game
         {
             // Initialisation:
             this.valid_pictures = new string[1];
+            this.valid_pictures[0] = "Picture_1";
+            //this.valid_pictures[1] = "Picture_2";
+
+            this.rand = new Random();
 
             // Create paintable colour palette:
             this.valid_button_colours = new Color[8];
@@ -84,15 +89,21 @@ namespace KinectGame_WindowsXNA.Source.Game
         public void load(ContentManager p_content,
                          GraphicsDevice p_gfx_device)
         {
-            // DEBUG: Load the test image:
-            Texture2D image_base = p_content.Load<Texture2D>("Textures/Game/Picture_1_Sections");
+            int current_image = this.rand.Next(0, this.valid_pictures.Length);
+
+            // Load the image:
+            Texture2D image_base = p_content.Load<Texture2D>("Textures/Game/" + this.valid_pictures[current_image] + "_Sections");
             int base_size = image_base.Width * image_base.Height;
 
             Color[] image_colours = new Color[base_size];
-            for (int i = 0; i < image_colours.Length; i++) image_colours[i] = Color.White;
+
+            for (int i = 0; i < image_colours.Length; i++)
+            {
+                image_colours[i] = Color.White;
+            }
 
             // Load image outline, setup blank white paintable image, position with offset:
-            this.image_outlines = p_content.Load<Texture2D>("Textures/Game/Picture_1_Outline");
+            this.image_outlines = p_content.Load<Texture2D>("Textures/Game/" + this.valid_pictures[current_image] + "_Outline");
             this.image_rect = new Rectangle((int)Math.Ceiling((p_gfx_device.Viewport.Width - image_base.Width) / 2.0f),
                                             (int)Math.Ceiling(((p_gfx_device.Viewport.Height - image_base.Height) / 2.0f) - 60),
                                             image_base.Width,
@@ -467,7 +478,7 @@ namespace KinectGame_WindowsXNA.Source.Game
         {
             // Run through the colour array and identify/store all new colours:
             List<Color> new_list = new List<Color>();
-            Color ignore = Color.White;
+            Color ignore = Color.Transparent;
 
             for (int i = 0; i < p_colour_array.Length; i++)
             {
@@ -510,6 +521,12 @@ namespace KinectGame_WindowsXNA.Source.Game
         public Texture2D getOutlineImage()
         {
             return this.image_outlines;
+        }
+
+
+        public Rectangle getImageRect()
+        {
+            return this.image_rect;
         }
     }
 }

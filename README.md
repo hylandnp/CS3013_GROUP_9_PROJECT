@@ -122,3 +122,11 @@ Gavan (01-03/03/2014)
 - Setup test array of source/destination rectangles to break up image into.
 
 
+Patrick (03/03/2014)
+
+- Splitting up of pieces into player 1 & 2 sections.
+
+- Basic buttons implemented in PuzzleGame.
+
+
+
