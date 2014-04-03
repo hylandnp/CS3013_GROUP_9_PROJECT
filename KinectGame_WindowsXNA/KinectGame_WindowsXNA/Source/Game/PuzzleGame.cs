@@ -25,7 +25,9 @@ namespace KinectGame_WindowsXNA.Source.Game
           * MEMBER DATA
           *////////////////////////////////////////
         private bool is_two_player = false,
-                     is_finished = false;
+                     is_finished = false,
+                     p1_moving_piece = false,
+                     p2_moving_piece = false;
         private List<PuzzlePiece> p1_pieces = null,
                                   p2_pieces = null;
         private Texture2D outline_texture = null,
@@ -136,6 +138,8 @@ namespace KinectGame_WindowsXNA.Source.Game
 
             this.p1_current_piece = 0;
             this.p2_current_piece = 0;
+            this.p1_moving_piece = false;
+            this.p2_moving_piece = false;
 
             // Create buttons for player 1:
             Vector2 temp_p1_pos = new Vector2(this.image_rect.X - 270.0f,
@@ -213,21 +217,95 @@ namespace KinectGame_WindowsXNA.Source.Game
                            Cursor p_player1_cursor,
                            Cursor p_player2_cursor)
         {
-            
-
-
             // Update the puzzle game:
             // TODO
 
-            // Update the puzzle selection buttons:
+            // Update player 1's puzzle selection buttons:
             if (this.p1_next_piece != null)
             {
                 this.p1_next_piece.Update(p_player1_cursor, p_time);
 
-                if (this.p1_next_piece.isClicked())
+                if (this.p1_next_piece.isClicked() &&
+                    !this.p1_moving_piece)
                 {
                     // Get next available piece:
-                    
+                    for (int i = this.p1_current_piece; i < this.p1_pieces.Count; i++)
+                    {
+                        if (i != this.p1_current_piece &&
+                            !this.p1_pieces[i].isInPlace() &&
+                            !this.p1_pieces[i].lockedToCursor())
+                        {
+                            this.p1_current_piece = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (this.p1_prev_piece != null)
+            {
+                this.p1_prev_piece.Update(p_player1_cursor, p_time);
+
+                if (this.p1_prev_piece.isClicked() &&
+                    !this.p1_moving_piece)
+                {
+                    // Get next available piece:
+                    for (int i = this.p1_current_piece; i >= 0; i--)
+                    {
+                        if (i != this.p1_current_piece &&
+                            !this.p1_pieces[i].isInPlace() &&
+                            !this.p1_pieces[i].lockedToCursor())
+                        {
+                            this.p1_current_piece = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Update player 2's puzzle selection buttons:
+            if(this.is_two_player)
+            {
+                if (this.p2_next_piece != null)
+                {
+                    this.p2_next_piece.Update(p_player2_cursor, p_time);
+
+                    if (this.p2_next_piece.isClicked() &&
+                        !this.p2_moving_piece)
+                    {
+                        // Get next available piece:
+                        for (int i = this.p2_current_piece; i < this.p2_pieces.Count; i++)
+                        {
+                            if (i != this.p2_current_piece &&
+                                !this.p2_pieces[i].isInPlace() &&
+                                !this.p2_pieces[i].lockedToCursor())
+                            {
+                                this.p2_current_piece = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (this.p2_prev_piece != null)
+                {
+                    this.p2_prev_piece.Update(p_player2_cursor, p_time);
+
+                    if (this.p2_prev_piece.isClicked() &&
+                        !this.p2_moving_piece)
+                    {
+                        // Get next available piece:
+                        for (int i = this.p2_current_piece; i >= 0; i--)
+                        {
+                            if (i != this.p2_current_piece &&
+                                !this.p2_pieces[i].isInPlace() &&
+                                !this.p2_pieces[i].lockedToCursor())
+                            {
+                                this.p2_current_piece = i;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -246,7 +324,7 @@ namespace KinectGame_WindowsXNA.Source.Game
                 }
             }
 
-            if (this.is_two_player&&
+            if (this.is_two_player &&
                 this.p2_pieces != null &&
                 this.p2_pieces.Count > 0)
             {
@@ -357,7 +435,7 @@ namespace KinectGame_WindowsXNA.Source.Game
 
             p_sprite_batch.End();
 
-            if(this.p1_prev_piece != null)
+            if (this.p1_prev_piece != null)
             {
                 this.p1_prev_piece.draw(p_sprite_batch);
             }

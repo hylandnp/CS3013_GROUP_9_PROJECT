@@ -128,5 +128,6 @@ Patrick (03/03/2014)
 
 - Basic buttons implemented in PuzzleGame.
 
+- Fixed puzzle-piece selection.
 
 
