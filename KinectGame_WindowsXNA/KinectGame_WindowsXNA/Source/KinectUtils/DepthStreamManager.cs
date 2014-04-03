@@ -35,7 +35,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                   GraphicsDevice p_gfx_device)
         {
             // Initialisation...
-            rect = p_dest_rect;
+            this.rect = p_dest_rect;
             this.depth_visualiser = p_depth_vis;
 
             this.depth_texture = new Texture2D(p_gfx_device,
@@ -56,8 +56,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public void updateDepthVideo(object p_sender, DepthImageFrameReadyEventArgs p_args)
         {
             // Update the depth stream video...
-            if (was_drawn)
-            {
+            //if (was_drawn)
+            //{
                 using (var current_frame = p_args.OpenDepthImageFrame())
                 {
                     if (current_frame != null &&
@@ -69,8 +69,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                     }
                 }
 
-                was_drawn = false;
-            }
+                was_drawn = true;
+            //}
         }
 
 
@@ -94,7 +94,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             // Render the depth stream video...
             if (p_kinect != null &&
                 p_sprite_batch != null &&
-                this.depth_texture != null)
+                this.depth_texture != null &&
+                this.was_drawn)
             {
                 this.depth_texture.SetData<short>(this.depth_data);
 
@@ -104,8 +105,6 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                     Color.White);
                 p_sprite_batch.End();
             }
-
-            was_drawn = true;
         }
     }
 }

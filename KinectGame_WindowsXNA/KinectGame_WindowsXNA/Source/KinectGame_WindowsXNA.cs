@@ -22,6 +22,7 @@ using KinectGame_WindowsXNA.Source.Game;
  * PATRICK - Added debug mouse tracking functionality & cursor updates/rendering.
  * GAVAN - Added buttons.
  * NEIL/PATRICK - Implemented basic painting/colouring game.
+ * RICHARD - Some minor bugfixes.
  */
 
 namespace KinectGame_WindowsXNA

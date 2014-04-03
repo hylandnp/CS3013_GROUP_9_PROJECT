@@ -12,6 +12,7 @@ using System.Text;
  * NEIL - Created the class.
  * PATRICK - Implemented image colouring.
  * GAVAN - Added simple & colour-selection buttons.
+ * RICHARD - Fixed colour button cycling.
  */
 
 namespace KinectGame_WindowsXNA.Source.Game
@@ -37,8 +38,8 @@ namespace KinectGame_WindowsXNA.Source.Game
                        p2_next_col = null,
                        p1_prev_col = null,
                        p2_prev_col = null;
-        private byte[] p1_colours,
-                       p2_colours;
+        private sbyte[] p1_colours,
+                        p2_colours;
         private ColourButton[] p1_cbuttons = null,
                                p2_cbuttons = null;
 
@@ -61,11 +62,11 @@ namespace KinectGame_WindowsXNA.Source.Game
             this.valid_button_colours[4] = Color.Green;
             this.valid_button_colours[5] = Color.Blue;
             this.valid_button_colours[6] = Color.Indigo;
-            this.valid_button_colours[6] = Color.Violet;
+            this.valid_button_colours[7] = Color.Violet;
 
             // Player colour selections:
-            this.p1_colours = new byte[3];
-            this.p2_colours = new byte[3];
+            this.p1_colours = new sbyte[3];
+            this.p2_colours = new sbyte[3];
             this.p1_colours[0] = 0;
             this.p1_colours[1] = 1;
             this.p1_colours[2] = 2;
@@ -260,30 +261,16 @@ namespace KinectGame_WindowsXNA.Source.Game
 
                 if (this.p1_next_col.isClicked())
                 {
-                    //byte temp = 0;
-                    //for (byte i = 0; i < this.valid_button_colours.Length; i++)
-                    //{
-                    //    if (this.valid_button_colours[this.p1_colours[0]] == this.valid_button_colours[i])
-                    //    {
-                    //        temp = i;
-                    //        break;
-                    //    }
-                    //}
+                    // Update set of visible colours:
+                    for (byte i = 0; i < (byte)this.p1_colours.Length; i++)
+                    {
+                        this.p1_colours[i]--;
 
-                    //this.p1_colours[2] = this.p1_colours[1];
-                    //this.p1_colours[1] = this.p1_colours[0];
-
-
-                    //if (temp - 1 < 0)
-                    //{
-                    //    temp = (byte)(this.p1_colours.Length - 1);
-                    //}
-                    //else
-                    //{
-                    //    temp--;
-                    //}
-
-                    //this.p1_colours[0] = temp;
+                        if (this.p1_colours[i] < 0)
+                        {
+                            this.p1_colours[i] += (sbyte)this.valid_button_colours.Length;
+                        }
+                    }
                 }
             }
 
@@ -294,7 +281,16 @@ namespace KinectGame_WindowsXNA.Source.Game
 
                 if (this.p2_next_col.isClicked())
                 {
-                    // TODO
+                    // Update set of visible colours:
+                    for (byte i = 0; i < (byte)this.p2_colours.Length; i++)
+                    {
+                        this.p2_colours[i]--;
+
+                        if (this.p2_colours[i] < 0)
+                        {
+                            this.p2_colours[i] += (sbyte)this.valid_button_colours.Length;
+                        }
+                    }
                 }
             }
 
@@ -304,7 +300,16 @@ namespace KinectGame_WindowsXNA.Source.Game
 
                 if (this.p1_prev_col.isClicked())
                 {
-                    // TODO
+                    // Update set of visible colours:
+                    for (byte i = 0; i < (byte)this.p1_colours.Length; i++)
+                    {
+                        this.p1_colours[i]++;
+
+                        if (this.p1_colours[i] >= (sbyte)this.valid_button_colours.Length)
+                        {
+                            this.p1_colours[i] -= (sbyte)this.valid_button_colours.Length;
+                        }
+                    }
                 }
             }
 
@@ -315,7 +320,16 @@ namespace KinectGame_WindowsXNA.Source.Game
 
                 if (this.p2_prev_col.isClicked())
                 {
-                    // TODO
+                    // Update set of visible colours:
+                    for (byte i = 0; i < (byte)this.p2_colours.Length; i++)
+                    {
+                        this.p2_colours[i]++;
+
+                        if (this.p2_colours[i] >= (sbyte)this.valid_button_colours.Length)
+                        {
+                            this.p2_colours[i] -= (sbyte)this.valid_button_colours.Length;
+                        }
+                    }
                 }
             }
 

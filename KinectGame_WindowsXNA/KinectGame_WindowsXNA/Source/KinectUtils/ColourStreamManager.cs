@@ -37,7 +37,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                    GraphicsDevice p_gfx_device)
         {
             // Initialisation...
-            rect = p_dest_rect;
+            this.rect = p_dest_rect;
             this.colour_visualiser = p_colour_vis;
 
             this.colour_texture = new Texture2D(p_gfx_device,
@@ -56,8 +56,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         public void updateColourVideo(object p_sender, ColorImageFrameReadyEventArgs p_args)
         {
             // Update the colour stream video...
-            if (was_drawn)
-            {
+            //if (was_drawn)
+            //{
                 using (var current_frame = p_args.OpenColorImageFrame())
                 {
                     if (current_frame != null &&
@@ -69,8 +69,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                     }
                 }
 
-                was_drawn = false;
-            }
+                was_drawn = true;
+            //}
         }
 
 
@@ -94,7 +94,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             // Render the colour stream video...
             if(p_kinect != null &&
                p_sprite_batch != null &&
-               this.colour_texture != null)
+               this.colour_texture != null &&
+               this.was_drawn)
             {
                 this.colour_texture.SetData(this.colour_data);
 
@@ -104,7 +105,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                     Color.White);
                 p_sprite_batch.End();
 
-                was_drawn = true;
+                was_drawn = false;
             }
         }
     }
