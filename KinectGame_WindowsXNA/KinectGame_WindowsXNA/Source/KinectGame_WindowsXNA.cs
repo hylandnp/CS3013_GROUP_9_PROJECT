@@ -155,7 +155,7 @@ namespace KinectGame_WindowsXNA
             this.player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
                                               this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
                                               this.Content.Load<SpriteFont>("Fonts/Segoe16"),
-                                              JointType.HandRight,
+                                              JointType.HandLeft,
                                               1.0f,
                                               1);
 

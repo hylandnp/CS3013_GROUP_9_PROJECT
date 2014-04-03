@@ -113,5 +113,12 @@ Neil (29/03/2014)
 - Setup menus & colour selection UI (unfinished).
 
 
+Gavan (01-03/03/2014)
+
+- Painting game finished.
+
+- Puzzle game started.
+
+- Setup test array of source/destination rectangles to break up image into.
 
 

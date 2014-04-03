@@ -69,7 +69,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                     }
                 }
 
-                was_drawn = true;
+            //    was_drawn = true;
             //}
         }
 
@@ -94,8 +94,8 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
             // Render the colour stream video...
             if(p_kinect != null &&
                p_sprite_batch != null &&
-               this.colour_texture != null &&
-               this.was_drawn)
+               this.colour_texture != null)// &&
+               //this.was_drawn)
             {
                 this.colour_texture.SetData(this.colour_data);
 
@@ -105,7 +105,7 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
                                     Color.White);
                 p_sprite_batch.End();
 
-                was_drawn = false;
+                //was_drawn = false;
             }
         }
     }
