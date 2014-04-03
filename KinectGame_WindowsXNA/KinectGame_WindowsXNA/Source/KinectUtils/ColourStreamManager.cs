@@ -24,7 +24,6 @@ namespace KinectGame_WindowsXNA.Source.KinectUtils
         private Texture2D colour_texture = null;
         private Effect colour_visualiser = null; // the XNA effect used to correctly format the RGBA pixel data
         private Rectangle rect;
-        private bool was_drawn = false;
 
 
 

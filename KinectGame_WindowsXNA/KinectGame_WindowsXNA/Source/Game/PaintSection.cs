@@ -173,6 +173,12 @@ namespace KinectGame_WindowsXNA.Source.Game
         }
 
 
+        public bool hoverOver()
+        {
+            return this.hover;
+        }
+
+
         private int convertCoords(Vector2 p_coords,
                                   int p_rect_width)
         {

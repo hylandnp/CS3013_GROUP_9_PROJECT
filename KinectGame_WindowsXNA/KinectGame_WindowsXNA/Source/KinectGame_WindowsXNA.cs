@@ -155,9 +155,9 @@ namespace KinectGame_WindowsXNA
             this.player_2_cursor = new Cursor(this.Content.Load<Texture2D>("Textures/Interface/UI_CursorHand"),
                                               this.Content.Load<Texture2D>("Textures/Interface/UI_CursorColourIcon"),
                                               this.Content.Load<SpriteFont>("Fonts/Segoe16"),
-                                              JointType.HandLeft,
+                                              JointType.HandRight,
                                               1.0f,
-                                              1);
+                                              0);
 
             // Create main-menu/player-selection buttons (with offset):
             this.mainmenu_button_1player = new Button(this.Content.Load<Texture2D>("Textures/Interface/UI_SinglePlayer"),
@@ -274,6 +274,8 @@ namespace KinectGame_WindowsXNA
             {
                 case GameState.STARTUP:
                     {
+                        this.player_1_cursor.selected_colour = Color.White;
+                        this.player_2_cursor.selected_colour = Color.White;
                         this.current_game_state = GameState.PLAYER_MENU;
                         break;
                     }
@@ -294,14 +296,14 @@ namespace KinectGame_WindowsXNA
                             this.mainmenu_button_1player.isClicked())
                         {
                             this.painting_game.setTwoPlayer(false);
-                            this.painting_game.setTwoPlayer(false);
+                            this.puzzle_game.setTwoPlayer(false);
                             this.current_game_state = GameState.HAND_SELECT;
                         }
 
                         if (this.mainmenu_button_2player != null &&
                             this.mainmenu_button_2player.isClicked())
                         {
-                            this.puzzle_game.setTwoPlayer(true);
+                            this.painting_game.setTwoPlayer(true);
                             this.puzzle_game.setTwoPlayer(true);
                             this.current_game_state = GameState.HAND_SELECT;
                         }
@@ -396,6 +398,10 @@ namespace KinectGame_WindowsXNA
                                                             this.painting_game.getImageRect());
                                 this.puzzle_game.load(this.Content,
                                                       this.GraphicsDevice);
+
+                                this.player_1_cursor.selected_colour = Color.White;
+                                this.player_2_cursor.selected_colour = Color.White;
+
                                 this.current_game_state = GameState.PUZZLE_MAKE;
                             }
                         }
@@ -510,7 +516,7 @@ namespace KinectGame_WindowsXNA
                         if (this.painting_game != null)
                         {
                             this.painting_game.draw(p_game_time, this.sprite_batch);
-                            draw_second_cursor = painting_game.isTwoPlayer();
+                            draw_second_cursor = this.painting_game.isTwoPlayer();
                         }
                         break;
                     }

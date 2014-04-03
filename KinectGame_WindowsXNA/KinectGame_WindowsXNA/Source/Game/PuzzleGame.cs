@@ -14,6 +14,7 @@ using KinectGame_WindowsXNA.Source.KinectUtils;
  * PATRICK - Puzzle-piece movement.
  * PATRICK - Puzzle-piece assembly.
  * RICHARD - Fixed minor bugs.
+ * GAVAN - Got puzzle-assembly finished.
  */
 
 namespace KinectGame_WindowsXNA.Source.Game
@@ -26,8 +27,8 @@ namespace KinectGame_WindowsXNA.Source.Game
           *////////////////////////////////////////
         private bool is_two_player = false,
                      is_finished = false,
-                     p1_moving_piece = false,
-                     p2_moving_piece = false;
+                     p1_new_piece = false,
+                     p2_new_piece = false;
         private List<PuzzlePiece> p1_pieces = null,
                                   p2_pieces = null;
         private Texture2D outline_texture = null,
@@ -44,8 +45,6 @@ namespace KinectGame_WindowsXNA.Source.Game
                        p2_prev_piece = null;
         private int p1_current_piece = 0,
                     p2_current_piece = 0;
-        private Vector2 p1_piece_pos,
-                        p2_piece_pos;
 
 
         /*/////////////////////////////////////////
@@ -138,8 +137,8 @@ namespace KinectGame_WindowsXNA.Source.Game
 
             this.p1_current_piece = 0;
             this.p2_current_piece = 0;
-            this.p1_moving_piece = false;
-            this.p2_moving_piece = false;
+            this.p1_new_piece = false;
+            this.p2_new_piece = false;
 
             // Create buttons for player 1:
             Vector2 temp_p1_pos = new Vector2(this.image_rect.X - 270.0f,
@@ -217,16 +216,12 @@ namespace KinectGame_WindowsXNA.Source.Game
                            Cursor p_player1_cursor,
                            Cursor p_player2_cursor)
         {
-            // Update the puzzle game:
-            // TODO
-
             // Update player 1's puzzle selection buttons:
             if (this.p1_next_piece != null)
             {
                 this.p1_next_piece.Update(p_player1_cursor, p_time);
 
-                if (this.p1_next_piece.isClicked() &&
-                    !this.p1_moving_piece)
+                if (this.p1_next_piece.isClicked())
                 {
                     // Get next available piece:
                     for (int i = this.p1_current_piece; i < this.p1_pieces.Count; i++)
@@ -246,8 +241,7 @@ namespace KinectGame_WindowsXNA.Source.Game
             {
                 this.p1_prev_piece.Update(p_player1_cursor, p_time);
 
-                if (this.p1_prev_piece.isClicked() &&
-                    !this.p1_moving_piece)
+                if (this.p1_prev_piece.isClicked())
                 {
                     // Get next available piece:
                     for (int i = this.p1_current_piece; i >= 0; i--)
@@ -270,8 +264,7 @@ namespace KinectGame_WindowsXNA.Source.Game
                 {
                     this.p2_next_piece.Update(p_player2_cursor, p_time);
 
-                    if (this.p2_next_piece.isClicked() &&
-                        !this.p2_moving_piece)
+                    if (this.p2_next_piece.isClicked())
                     {
                         // Get next available piece:
                         for (int i = this.p2_current_piece; i < this.p2_pieces.Count; i++)
@@ -291,8 +284,7 @@ namespace KinectGame_WindowsXNA.Source.Game
                 {
                     this.p2_prev_piece.Update(p_player2_cursor, p_time);
 
-                    if (this.p2_prev_piece.isClicked() &&
-                        !this.p2_moving_piece)
+                    if (this.p2_prev_piece.isClicked())
                     {
                         // Get next available piece:
                         for (int i = this.p2_current_piece; i >= 0; i--)
@@ -339,12 +331,15 @@ namespace KinectGame_WindowsXNA.Source.Game
 
             this.is_finished = temp_finished;
 
-            // Set which pieces are visible:
+            // Update/Set which pieces are visible:
             if (this.p1_pieces != null &&
                 this.p1_pieces.Count > 0)
             {
                 foreach (var piece in this.p1_pieces)
                 {
+                    // Update the current piece:
+                    if (this.p1_pieces.IndexOf(piece) == this.p1_current_piece) piece.Update(p_player1_cursor);
+
                     if (piece.isInPlace())
                     {
                         piece.draw_piece = true;
@@ -362,6 +357,9 @@ namespace KinectGame_WindowsXNA.Source.Game
             {
                 foreach (var piece in this.p2_pieces)
                 {
+                    // Update the current piece:
+                    if (this.p2_pieces.IndexOf(piece) == this.p2_current_piece) piece.Update(p_player2_cursor);
+
                     if (piece.isInPlace())
                     {
                         piece.draw_piece = true;
@@ -373,11 +371,27 @@ namespace KinectGame_WindowsXNA.Source.Game
                 }
             }
 
+            // Check current pieces:
             if (this.p1_pieces != null &&
                 this.p1_pieces.Count > 0 &&
                 this.p1_current_piece < this.p1_pieces.Count)
             {
                 p1_pieces[this.p1_current_piece].draw_piece = true;
+
+                if(p1_pieces[this.p1_current_piece].isInPlace())
+                {
+                    // Keep at locked/solved position:
+                    this.p1_pieces[this.p1_current_piece].destination_rect = this.p1_pieces[this.p1_current_piece].target_rect;
+
+                    if(this.p1_current_piece < (this.p1_pieces.Count - 1))
+                    {
+                        this.p1_current_piece++;
+                    }
+                    else if(this.p1_current_piece > 0)
+                    {
+                        this.p1_current_piece--;
+                    }
+                }
             }
 
             if (this.is_two_player &&
@@ -386,6 +400,21 @@ namespace KinectGame_WindowsXNA.Source.Game
                 this.p2_current_piece < this.p2_pieces.Count)
             {
                 p2_pieces[this.p2_current_piece].draw_piece = true;
+
+                if (p2_pieces[this.p2_current_piece].isInPlace())
+                {
+                    // Keep at locked/solved position:
+                    this.p2_pieces[this.p2_current_piece].destination_rect = this.p2_pieces[this.p2_current_piece].target_rect;
+
+                    if (this.p2_current_piece < (this.p2_pieces.Count - 1))
+                    {
+                        this.p2_current_piece++;
+                    }
+                    else if (this.p2_current_piece > 0)
+                    {
+                        this.p2_current_piece--;
+                    }
+                }
             }
         }
 

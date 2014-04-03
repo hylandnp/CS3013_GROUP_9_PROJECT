@@ -237,19 +237,25 @@ namespace KinectGame_WindowsXNA.Source.Game
             }
 
             // Check paint sections:
+            int player_1_is_painting = -1;
+
             if (p1_can_paint)
             {
                 for (int i = 0; i < this.image_sections.Length; i++)
                 {
-                    this.image_sections[i].update(p_player_1,
-                                                  p1,
-                                                  this.image_rect.Width);
-
-                    if (this.image_sections[i].isClicked())
+                    if (p1_can_paint)
                     {
-                        this.image_sections[i].changeSectionColour(ref this.paint_colours,
-                                                                   p_player_1.selected_colour);
-                        this.update_texture = true;
+                        this.image_sections[i].update(p_player_1,
+                                                      p1,
+                                                      this.image_rect.Width);
+                        if (this.image_sections[i].hoverOver()) player_1_is_painting = i;
+
+                        if (this.image_sections[i].isClicked())
+                        {
+                            this.image_sections[i].changeSectionColour(ref this.paint_colours,
+                                                                       p_player_1.selected_colour);
+                            this.update_texture = true;
+                        }
                     }
                 }
             }
@@ -259,15 +265,18 @@ namespace KinectGame_WindowsXNA.Source.Game
             {
                 for (int i = 0; i < this.image_sections.Length; i++)
                 {
-                    this.image_sections[i].update(p_player_2,
-                                                  p2,
-                                                  this.image_rect.Width);
-
-                    if (this.image_sections[i].isClicked())
+                    if (i != player_1_is_painting)
                     {
-                        this.image_sections[i].changeSectionColour(ref this.paint_colours,
-                                                                   p_player_2.selected_colour);
-                        this.update_texture = true;
+                        this.image_sections[i].update(p_player_2,
+                                                      p2,
+                                                      this.image_rect.Width);
+
+                        if (this.image_sections[i].isClicked())
+                        {
+                            this.image_sections[i].changeSectionColour(ref this.paint_colours,
+                                                                       p_player_2.selected_colour);
+                            this.update_texture = true;
+                        }
                     }
                 }
             }
